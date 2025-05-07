@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     text-align: center;
-    background-color: #f4f4f4;
+    background-color: white;
 }
 
 .header {
@@ -21,18 +21,23 @@ body {
 }
 
 .logo-img {
-    width: 40px;
-    margin-right: 10px;
+    width: 130px;
+    margin-right: 130px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .search-bar {
     padding: 10px;
-    width: 40%;
+    width: 50%;
     border-radius: 8px;
-    border: none;
+    border: solid;
 }
 
-.icons button {
+.icons-button {
     background: none;
     border: none;
     cursor: pointer;
@@ -97,4 +102,50 @@ body {
 
 .skill-item:hover {
     background: #ff8800;
+}
+
+.func-button{
+    background-color: #99ccd8;
+    border-radius: 25px; 
+    border: none; 
+    padding: 8px 16px;
+}
+
+.user-icon{
+    font-size: 25px;
+}
+
+.nav{
+    border: 1px solid #ccc; 
+    padding: 10px; 
+    border-radius: 4px; display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
+
+.option-container {
+    text-align: center;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+.hidden {
+    display: none;
+}
+#quizContainer {
+    margin-top: 20px;
+}
+.button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+}
+.button:hover {
+    background-color: #0056b3;
 }
