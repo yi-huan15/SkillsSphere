@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>SQL - Level 3</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+            question: `Create a table named Students with the following columns:<br><br>
+            <div>• student_id (INTEGER, Primary Key)</div><br>
+            <div>• name (VARCHAR(50))</div><br>
+            <div>• age (INTEGER)</div><br>
+            <div>• major (VARCHAR(50))</div><br><br><br>
+            <div>After creating the table, insert the following data:</div><br>
+            <img src="sqlq31.png" alt="Table Data" class="question-image"><br><br>
+            <div>Write the SQL statements to create the table and insert all rows.</div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your SQL statements here..."></textarea>`;
+            }
+            },
+            {
+            question: `Using the Students table above, write a SQL query to:<br><br>
+            <div>•	Select all students majoring in "Computer Science"</div><br>
+            <div>•	Only include students who are older than 21</div><br><br>
+            <div>Expected Output:</div><br>
+            <img src="sqlq32.png" alt="Table Data" class="question-image"><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your SQL statements here..."></textarea>`;
+            }
+            },
+            {
+            question: `You have a table called Orders:<br><br>
+            <img src="sqlq33.1.png" alt="Order Table" class="question-image"><br><br>
+            <div>Write a SQL query to find the total order amount for each customer. Also, sort the result by total amount in descending order.</div><br><br>
+            <div>Expected Output:</div><br>
+            <img src="sqlq33.2.png" alt="Table Data" class="question-image"><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your SQL statements here..."></textarea>`;
+            }
+            },
+            {
+            question: `You have two tables:<br><br>
+            <div>Customers</div><br>
+            <img src="sqlq34.1.png" alt="Customers Table" class="question-image"><br><br>
+            <div>Orders</div><br>
+            <img src="sqlq34.2.png" alt="Orders Table" class="question-image"><br><br>
+            <div>Write a SQL query to list each customer's name and their total order amount. If a customer hasn’t placed any orders, they should still be listed with total amount as NULL or 0.</div><br><br>
+            <div>Expected Output:</div><br>
+            <img src="sqlq34.3.png" alt="Table Data" class="question-image"><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your SQL statements here..."></textarea>`;
+            }
+            },
+            {
+            question: `Using the Orders table above, write a query to:<br><br>
+            <div>•	Find customers who have placed orders with an amount greater than the average order amount</div><br><br>
+            <div>Expected Output (based on sample data):</div><br>
+            <img src="sqlq35.png" alt="Table Data" class="question-image"><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your SQL statements here..."></textarea>`;
+            }
+            },
+            {
+            question: `You’re designing a small University Database with the following tables:<br><br>
+            <div>Students</div><br>
+            <img src="sqlq36.1.png" alt="Students Table" class="question-image"><br><br>
+            <div>Courses</div><br>
+            <img src="sqlq36.2.png" alt="Courses Table" class="question-image"><br><br>
+            <div>Enrollments</div><br>
+            <img src="sqlq36.3.png" alt="Enrollments Table" class="question-image"><br><br>
+            <div>Your Tasks:<br><br>
+                1.	Create all 3 tables with appropriate constraints (primary keys and foreign keys).<br><br>
+                2.	Insert sample data (at least 4 students, 4 courses, and 6 enrollments).<br><br>
+                3.	Write a query to:<br>
+                    o	List each student with their name, major, course name, and grade.<br>
+                    o	Sort the results by student name and then by course name.<br><br>
+                4.	Write a query to:<br>
+                    o	Count how many students are enrolled in each course.<br>
+                    o	Include the course name and number of students.<br>
+                    o	Sort by the number of students (descending).<br><br>
+                5.	Write a query to:<br>
+                    o	List all students not enrolled in any course.<br><br>
+                6.	Write a query to:<br>
+                    o	Find the average grade per course assuming grades are mapped as:<br>
+                        A = 4, B = 3, C = 2, D = 1, F = 0.<br><br>
+            </div>
+            <div>Expected Output:</div><br>
+            <img src="sqlq36.4.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq36.5.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq36.6.png" alt="Table Data" class="question-image"><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your SQL statements here..."></textarea>`;
+            }
+            },
+            {
+            question: `You're working as a data analyst for an e-commerce company. Your goal is to analyze customer orders, spending habits, and product performance. You'll be working with the following tables:<br><br>
+            <img src="sqlq37.1.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.2.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.3.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.4.png" alt="Table Data" class="question-image"><br><br>
+            <div>Your Tasks:<br>
+            🔹 Step 1: Create all the tables with primary and foreign key constraints.<br><br>
+            🔹 Step 2: Insert sample data for:<br>
+                •	5 customers from different countries<br>
+                •	5 products in various categories<br>
+                •	5 orders<br>
+                •	8 order details (some orders with multiple products)<br><br>
+            </div>
+            <div>Expected Output:</div><br>
+            <img src="sqlq37.5.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.6.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.7.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.8.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.9.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.10.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.11.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.12.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.13.png" alt="Table Data" class="question-image"><br>
+            <img src="sqlq37.14.png" alt="Table Data" class="question-image"><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your SQL statements here..."></textarea>`;
+            }
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        const questionData = questions[currentQuestionIndex];
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionElement = document.createElement('p');
+        questionElement.innerHTML = `${questionData.question}`;
+        questionContainer.appendChild(questionElement);
+
+        if (questionData.inputAnswer) {
+            const inputBox = document.createElement('div');
+            inputBox.innerHTML = questionData.renderInputBox();
+            questionContainer.appendChild(inputBox);
+        } else if (questionData.options) {
+            questionData.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option-container');
+                optionElement.innerHTML = `
+                <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+                <label for="q${currentQuestionIndex}_${index}">${option}</label>
+                `;
+                questionContainer.appendChild(optionElement);
+            });
+        }
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const userInput = document.querySelector('textarea[name="userAnswer"]');
+            if (!userInput || userInput.value.trim() === '') {
+            alert('Please input your answer before proceeding.');
+            return;
+            }
+
+            // Save the user's input answer for the current question
+            questions[currentQuestionIndex].saveAnswer(userInput.value.trim());
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+            } else {
+            showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = `Thank you for completing the quiz. Your answers have been submitted successfully. <div><br>You will receive a notification about your score within 7 working days. Please check your mailbox for updates.</div>`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden'); // Show the back to test page button
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

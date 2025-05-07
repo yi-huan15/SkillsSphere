@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div style="display: flex; align-items: center; width: 100%;">
+            <div class="logo">
+                <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+            </div>
+            <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+            <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <button onclick="window.location.href='test.html'" class="func-button">Skills Test Platform</button>
+        <button onclick="window.location.href='video.html'" class="func-button">Upload Video</button>
+        <button onclick="window.location.href='resume.html'" class="func-button">Resume Optimizer</button>
+    </nav>
+
+    <section class="signup">
+        <h3>Welcome to SkillSphere</h3>
+        <h2>Create your account</h2>
+        <div class="form-container">
+            <label>Email:</label>
+            <input type="text"><br><br>
+            <label>Password:</label>
+            <input type="password"><br><br>
+            <label>Confirm Password:</label>
+            <input type="password"><br><br>
+            <button class="signup-btn" onclick="window.location.href='login.html'">Sign Up</button>
+        </div>
+        <p>Already have an account? <a href="login.html">Log in</a></p>
+    </section>
+</body>
+</html>
