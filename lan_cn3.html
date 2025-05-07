@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Chinese Language - Level 3</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+            question: `阅读下面短文，然后回答问题：<br>
+            小明每天放学后都会主动完成作业，然后帮妈妈做家务。妈妈常常夸他是个懂事的孩子。<br><br>
+            <div>问题：<br>
+            （1）小明放学后通常会做什么？<br>
+            （2）妈妈觉得小明是个怎样的孩子？</div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>文章：《秋天的怀念》</div><br>
+            <div>秋天，像一位轻盈的姑娘，轻轻地走进了大地。田野上的稻谷金黄，果实累累，空气清新，阳光透过窗子洒进房间，温暖而柔和。
+                <br>我站在窗前，透过玻璃看着远处的山川和村庄，心中涌起一种久违的温暖和思绪。秋天，是一个收获的季节，也是一个思念的季节。<br>
+                <br>小时候，父亲常带我到田间地头，教我辨认每一株植物，每一片叶子。他说：“秋天是大自然的恩赐，是上天给予人类的财富。”每当我听到这些话，心中就充满了对大自然的敬畏和感恩。<br>
+                <br>如今，父亲早已离世，但我依然怀念那时的日子。每当秋天来临，空气中弥漫着一股特殊的气息，它带着父亲的身影，带着那些无数的教诲和鼓励，飘然而至，温暖着我的心。<br>
+                <br>每年的秋天，我都会独自来到田间，静静地站在那片曾经与父亲一起耕耘的土地上，闭上眼睛，仿佛能听到父亲的声音，感受到他那温暖的目光。
+                <br>那种思念，是无法言喻的，它像秋天的风，轻轻地抚过心头，让我时常感到温馨与孤独交织的复杂情感。<br>
+                <br>秋天，是思念的季节，也是怀念的季节。它让我们感受到温暖，也让我们更加懂得珍惜眼前的幸福。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                文章通过什么季节来表达思念的情感？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>文章：《秋天的怀念》</div><br>
+            <div>秋天，像一位轻盈的姑娘，轻轻地走进了大地。田野上的稻谷金黄，果实累累，空气清新，阳光透过窗子洒进房间，温暖而柔和。
+                <br>我站在窗前，透过玻璃看着远处的山川和村庄，心中涌起一种久违的温暖和思绪。秋天，是一个收获的季节，也是一个思念的季节。<br>
+                <br>小时候，父亲常带我到田间地头，教我辨认每一株植物，每一片叶子。他说：“秋天是大自然的恩赐，是上天给予人类的财富。”每当我听到这些话，心中就充满了对大自然的敬畏和感恩。<br>
+                <br>如今，父亲早已离世，但我依然怀念那时的日子。每当秋天来临，空气中弥漫着一股特殊的气息，它带着父亲的身影，带着那些无数的教诲和鼓励，飘然而至，温暖着我的心。<br>
+                <br>每年的秋天，我都会独自来到田间，静静地站在那片曾经与父亲一起耕耘的土地上，闭上眼睛，仿佛能听到父亲的声音，感受到他那温暖的目光。
+                <br>那种思念，是无法言喻的，它像秋天的风，轻轻地抚过心头，让我时常感到温馨与孤独交织的复杂情感。<br>
+                <br>秋天，是思念的季节，也是怀念的季节。它让我们感受到温暖，也让我们更加懂得珍惜眼前的幸福。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                文章中提到，父亲常带作者做什么事情？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>文章：《秋天的怀念》</div><br>
+            <div>秋天，像一位轻盈的姑娘，轻轻地走进了大地。田野上的稻谷金黄，果实累累，空气清新，阳光透过窗子洒进房间，温暖而柔和。
+                <br>我站在窗前，透过玻璃看着远处的山川和村庄，心中涌起一种久违的温暖和思绪。秋天，是一个收获的季节，也是一个思念的季节。<br>
+                <br>小时候，父亲常带我到田间地头，教我辨认每一株植物，每一片叶子。他说：“秋天是大自然的恩赐，是上天给予人类的财富。”每当我听到这些话，心中就充满了对大自然的敬畏和感恩。<br>
+                <br>如今，父亲早已离世，但我依然怀念那时的日子。每当秋天来临，空气中弥漫着一股特殊的气息，它带着父亲的身影，带着那些无数的教诲和鼓励，飘然而至，温暖着我的心。<br>
+                <br>每年的秋天，我都会独自来到田间，静静地站在那片曾经与父亲一起耕耘的土地上，闭上眼睛，仿佛能听到父亲的声音，感受到他那温暖的目光。
+                <br>那种思念，是无法言喻的，它像秋天的风，轻轻地抚过心头，让我时常感到温馨与孤独交织的复杂情感。<br>
+                <br>秋天，是思念的季节，也是怀念的季节。它让我们感受到温暖，也让我们更加懂得珍惜眼前的幸福。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                文章中，作者通过哪些感官表达对父亲的怀念？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>文章：《秋天的怀念》</div><br>
+            <div>秋天，像一位轻盈的姑娘，轻轻地走进了大地。田野上的稻谷金黄，果实累累，空气清新，阳光透过窗子洒进房间，温暖而柔和。
+                <br>我站在窗前，透过玻璃看着远处的山川和村庄，心中涌起一种久违的温暖和思绪。秋天，是一个收获的季节，也是一个思念的季节。<br>
+                <br>小时候，父亲常带我到田间地头，教我辨认每一株植物，每一片叶子。他说：“秋天是大自然的恩赐，是上天给予人类的财富。”每当我听到这些话，心中就充满了对大自然的敬畏和感恩。<br>
+                <br>如今，父亲早已离世，但我依然怀念那时的日子。每当秋天来临，空气中弥漫着一股特殊的气息，它带着父亲的身影，带着那些无数的教诲和鼓励，飘然而至，温暖着我的心。<br>
+                <br>每年的秋天，我都会独自来到田间，静静地站在那片曾经与父亲一起耕耘的土地上，闭上眼睛，仿佛能听到父亲的声音，感受到他那温暖的目光。
+                <br>那种思念，是无法言喻的，它像秋天的风，轻轻地抚过心头，让我时常感到温馨与孤独交织的复杂情感。<br>
+                <br>秋天，是思念的季节，也是怀念的季节。它让我们感受到温暖，也让我们更加懂得珍惜眼前的幸福。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                文章提到“每年的秋天，我都会独自来到田间”，这一行为最能体现作者的什么心理？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>秋天，像一位轻盈的姑娘，轻轻地走进了大地。田野上的稻谷金黄，果实累累，空气清新，阳光透过窗子洒进房间，温暖而柔和。
+                <br>我站在窗前，透过玻璃看着远处的山川和村庄，心中涌起一种久违的温暖和思绪。秋天，是一个收获的季节，也是一个思念的季节。<br>
+                <br>小时候，父亲常带我到田间地头，教我辨认每一株植物，每一片叶子。他说：“秋天是大自然的恩赐，是上天给予人类的财富。”每当我听到这些话，心中就充满了对大自然的敬畏和感恩。<br>
+                <br>如今，父亲早已离世，但我依然怀念那时的日子。每当秋天来临，空气中弥漫着一股特殊的气息，它带着父亲的身影，带着那些无数的教诲和鼓励，飘然而至，温暖着我的心。<br>
+                <br>每年的秋天，我都会独自来到田间，静静地站在那片曾经与父亲一起耕耘的土地上，闭上眼睛，仿佛能听到父亲的声音，感受到他那温暖的目光。
+                <br>那种思念，是无法言喻的，它像秋天的风，轻轻地抚过心头，让我时常感到温馨与孤独交织的复杂情感。<br>
+                <br>秋天，是思念的季节，也是怀念的季节。它让我们感受到温暖，也让我们更加懂得珍惜眼前的幸福。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                文章中，“秋天是一个收获的季节，也是一个思念的季节”这句话的意义是什么？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>文章：《秋天的怀念》</div><br>
+            <div>秋天，像一位轻盈的姑娘，轻轻地走进了大地。田野上的稻谷金黄，果实累累，空气清新，阳光透过窗子洒进房间，温暖而柔和。
+                <br>我站在窗前，透过玻璃看着远处的山川和村庄，心中涌起一种久违的温暖和思绪。秋天，是一个收获的季节，也是一个思念的季节。<br>
+                <br>小时候，父亲常带我到田间地头，教我辨认每一株植物，每一片叶子。他说：“秋天是大自然的恩赐，是上天给予人类的财富。”每当我听到这些话，心中就充满了对大自然的敬畏和感恩。<br>
+                <br>如今，父亲早已离世，但我依然怀念那时的日子。每当秋天来临，空气中弥漫着一股特殊的气息，它带着父亲的身影，带着那些无数的教诲和鼓励，飘然而至，温暖着我的心。<br>
+                <br>每年的秋天，我都会独自来到田间，静静地站在那片曾经与父亲一起耕耘的土地上，闭上眼睛，仿佛能听到父亲的声音，感受到他那温暖的目光。
+                <br>那种思念，是无法言喻的，它像秋天的风，轻轻地抚过心头，让我时常感到温馨与孤独交织的复杂情感。<br>
+                <br>秋天，是思念的季节，也是怀念的季节。它让我们感受到温暖，也让我们更加懂得珍惜眼前的幸福。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                文章最后，作者的情感是如何表达的？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>文章：《记忆的碎片》</div><br>
+            <div>人们常说，时间是一条流动的河流，把一切带走，也把一切带来。对于我来说，记忆就是那条河流的碎片，散落在时间的彼岸，偶尔捡起一片，细细回味。<br>
+                <br>记忆里最清晰的部分，是小时候和父母一起度过的时光。我们一家人住在一个小村庄，父亲是村里的医生，母亲是老师。
+                <br>每天清晨，父亲总是最早起床，拿着手提包走出家门。我和母亲会一起做早餐，桌上有刚煮好的粥、香喷喷的包子和一些水果。吃过早餐后，我和母亲会在院子里玩耍，父亲则忙着诊疗病人。<br>
+                <br>每当夕阳西下，我们一家三口坐在院子里，父亲总会给我讲一些村里发生的故事，或者是他在医院遇到的趣事。那时的我，总是坐在父亲的怀里，听得津津有味，感到无比的温暖和安全。<br>
+                <br>然而，随着时间的流逝，一切都悄然改变了。父亲的工作变得越来越忙，母亲也开始承担起更多的教学任务。我们一家人的相聚时间变得越来越少。
+                <br>我不再每天等父亲回家，也不再和母亲一起在院子里玩耍。那些曾经美好的时光，仿佛在岁月的流逝中逐渐消失，变成了记忆的碎片。<br>
+                <br>直到有一天，我回到了那个曾经熟悉的小村庄，走进了已经空荡的家。院子里依旧是当年的景象，然而一切都显得那么陌生。
+                <br>站在那片曾经充满欢声笑语的地方，我忽然意识到，那些年与父母一起度过的时光，已经远远地被时间带走了，只剩下这些零碎的记忆。<br>
+                <br>我蹲下来，拾起一片记忆的碎片，仿佛听到了父亲的笑声，母亲的叮嘱。那一瞬间，所有的遗憾和思念涌上心头。虽然时光已经过去，但那些曾经温暖的瞬间，依旧深深地留在我的心里。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                文章中提到，作者最清晰的记忆是什么？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>文章：《记忆的碎片》</div><br>
+            <div>人们常说，时间是一条流动的河流，把一切带走，也把一切带来。对于我来说，记忆就是那条河流的碎片，散落在时间的彼岸，偶尔捡起一片，细细回味。<br>
+                <br>记忆里最清晰的部分，是小时候和父母一起度过的时光。我们一家人住在一个小村庄，父亲是村里的医生，母亲是老师。
+                <br>每天清晨，父亲总是最早起床，拿着手提包走出家门。我和母亲会一起做早餐，桌上有刚煮好的粥、香喷喷的包子和一些水果。吃过早餐后，我和母亲会在院子里玩耍，父亲则忙着诊疗病人。<br>
+                <br>每当夕阳西下，我们一家三口坐在院子里，父亲总会给我讲一些村里发生的故事，或者是他在医院遇到的趣事。那时的我，总是坐在父亲的怀里，听得津津有味，感到无比的温暖和安全。<br>
+                <br>然而，随着时间的流逝，一切都悄然改变了。父亲的工作变得越来越忙，母亲也开始承担起更多的教学任务。我们一家人的相聚时间变得越来越少。
+                <br>我不再每天等父亲回家，也不再和母亲一起在院子里玩耍。那些曾经美好的时光，仿佛在岁月的流逝中逐渐消失，变成了记忆的碎片。<br>
+                <br>直到有一天，我回到了那个曾经熟悉的小村庄，走进了已经空荡的家。院子里依旧是当年的景象，然而一切都显得那么陌生。
+                <br>站在那片曾经充满欢声笑语的地方，我忽然意识到，那些年与父母一起度过的时光，已经远远地被时间带走了，只剩下这些零碎的记忆。<br>
+                <br>我蹲下来，拾起一片记忆的碎片，仿佛听到了父亲的笑声，母亲的叮嘱。那一瞬间，所有的遗憾和思念涌上心头。虽然时光已经过去，但那些曾经温暖的瞬间，依旧深深地留在我的心里。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                在文章中，作者是如何描述小时候和父母在一起的时光的？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>文章：《记忆的碎片》</div><br>
+            <div>人们常说，时间是一条流动的河流，把一切带走，也把一切带来。对于我来说，记忆就是那条河流的碎片，散落在时间的彼岸，偶尔捡起一片，细细回味。<br>
+                <br>记忆里最清晰的部分，是小时候和父母一起度过的时光。我们一家人住在一个小村庄，父亲是村里的医生，母亲是老师。
+                <br>每天清晨，父亲总是最早起床，拿着手提包走出家门。我和母亲会一起做早餐，桌上有刚煮好的粥、香喷喷的包子和一些水果。吃过早餐后，我和母亲会在院子里玩耍，父亲则忙着诊疗病人。<br>
+                <br>每当夕阳西下，我们一家三口坐在院子里，父亲总会给我讲一些村里发生的故事，或者是他在医院遇到的趣事。那时的我，总是坐在父亲的怀里，听得津津有味，感到无比的温暖和安全。<br>
+                <br>然而，随着时间的流逝，一切都悄然改变了。父亲的工作变得越来越忙，母亲也开始承担起更多的教学任务。我们一家人的相聚时间变得越来越少。
+                <br>我不再每天等父亲回家，也不再和母亲一起在院子里玩耍。那些曾经美好的时光，仿佛在岁月的流逝中逐渐消失，变成了记忆的碎片。<br>
+                <br>直到有一天，我回到了那个曾经熟悉的小村庄，走进了已经空荡的家。院子里依旧是当年的景象，然而一切都显得那么陌生。
+                <br>站在那片曾经充满欢声笑语的地方，我忽然意识到，那些年与父母一起度过的时光，已经远远地被时间带走了，只剩下这些零碎的记忆。<br>
+                <br>我蹲下来，拾起一片记忆的碎片，仿佛听到了父亲的笑声，母亲的叮嘱。那一瞬间，所有的遗憾和思念涌上心头。虽然时光已经过去，但那些曾经温暖的瞬间，依旧深深地留在我的心里。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                文章中提到，随着时间的流逝，家庭成员的生活发生了什么变化？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>文章：《记忆的碎片》</div><br>
+            <div>人们常说，时间是一条流动的河流，把一切带走，也把一切带来。对于我来说，记忆就是那条河流的碎片，散落在时间的彼岸，偶尔捡起一片，细细回味。<br>
+                <br>记忆里最清晰的部分，是小时候和父母一起度过的时光。我们一家人住在一个小村庄，父亲是村里的医生，母亲是老师。
+                <br>每天清晨，父亲总是最早起床，拿着手提包走出家门。我和母亲会一起做早餐，桌上有刚煮好的粥、香喷喷的包子和一些水果。吃过早餐后，我和母亲会在院子里玩耍，父亲则忙着诊疗病人。<br>
+                <br>每当夕阳西下，我们一家三口坐在院子里，父亲总会给我讲一些村里发生的故事，或者是他在医院遇到的趣事。那时的我，总是坐在父亲的怀里，听得津津有味，感到无比的温暖和安全。<br>
+                <br>然而，随着时间的流逝，一切都悄然改变了。父亲的工作变得越来越忙，母亲也开始承担起更多的教学任务。我们一家人的相聚时间变得越来越少。
+                <br>我不再每天等父亲回家，也不再和母亲一起在院子里玩耍。那些曾经美好的时光，仿佛在岁月的流逝中逐渐消失，变成了记忆的碎片。<br>
+                <br>直到有一天，我回到了那个曾经熟悉的小村庄，走进了已经空荡的家。院子里依旧是当年的景象，然而一切都显得那么陌生。
+                <br>站在那片曾经充满欢声笑语的地方，我忽然意识到，那些年与父母一起度过的时光，已经远远地被时间带走了，只剩下这些零碎的记忆。<br>
+                <br>我蹲下来，拾起一片记忆的碎片，仿佛听到了父亲的笑声，母亲的叮嘱。那一瞬间，所有的遗憾和思念涌上心头。虽然时光已经过去，但那些曾经温暖的瞬间，依旧深深地留在我的心里。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                为什么作者回到曾经的家时，会感到一切都变得陌生？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `阅读一下文章，并回答以下问题。<br><br>
+            <div>文章：《记忆的碎片》</div><br>
+            <div>人们常说，时间是一条流动的河流，把一切带走，也把一切带来。对于我来说，记忆就是那条河流的碎片，散落在时间的彼岸，偶尔捡起一片，细细回味。<br>
+                <br>记忆里最清晰的部分，是小时候和父母一起度过的时光。我们一家人住在一个小村庄，父亲是村里的医生，母亲是老师。
+                <br>每天清晨，父亲总是最早起床，拿着手提包走出家门。我和母亲会一起做早餐，桌上有刚煮好的粥、香喷喷的包子和一些水果。吃过早餐后，我和母亲会在院子里玩耍，父亲则忙着诊疗病人。<br>
+                <br>每当夕阳西下，我们一家三口坐在院子里，父亲总会给我讲一些村里发生的故事，或者是他在医院遇到的趣事。那时的我，总是坐在父亲的怀里，听得津津有味，感到无比的温暖和安全。<br>
+                <br>然而，随着时间的流逝，一切都悄然改变了。父亲的工作变得越来越忙，母亲也开始承担起更多的教学任务。我们一家人的相聚时间变得越来越少。
+                <br>我不再每天等父亲回家，也不再和母亲一起在院子里玩耍。那些曾经美好的时光，仿佛在岁月的流逝中逐渐消失，变成了记忆的碎片。<br>
+                <br>直到有一天，我回到了那个曾经熟悉的小村庄，走进了已经空荡的家。院子里依旧是当年的景象，然而一切都显得那么陌生。
+                <br>站在那片曾经充满欢声笑语的地方，我忽然意识到，那些年与父母一起度过的时光，已经远远地被时间带走了，只剩下这些零碎的记忆。<br>
+                <br>我蹲下来，拾起一片记忆的碎片，仿佛听到了父亲的笑声，母亲的叮嘱。那一瞬间，所有的遗憾和思念涌上心头。虽然时光已经过去，但那些曾经温暖的瞬间，依旧深深地留在我的心里。
+            </div><br><br>
+            <div>请根据文章内容回答以下问题：<br>
+                在文章的结尾，作者拾起了记忆的碎片，为什么这对他来说如此重要？
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        const questionData = questions[currentQuestionIndex];
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionElement = document.createElement('p');
+        questionElement.innerHTML = `${questionData.question}`;
+        questionContainer.appendChild(questionElement);
+
+        if (questionData.inputAnswer) {
+            const inputBox = document.createElement('div');
+            inputBox.innerHTML = questionData.renderInputBox();
+            questionContainer.appendChild(inputBox);
+        } else if (questionData.options) {
+            questionData.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option-container');
+                optionElement.innerHTML = `
+                <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+                <label for="q${currentQuestionIndex}_${index}">${option}</label>
+                `;
+                questionContainer.appendChild(optionElement);
+            });
+        }
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const userInput = document.querySelector('textarea[name="userAnswer"]');
+            if (!userInput || userInput.value.trim() === '') {
+            alert('Please input your answer before proceeding.');
+            return;
+            }
+
+            // Save the user's input answer for the current question
+            questions[currentQuestionIndex].saveAnswer(userInput.value.trim());
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+            } else {
+            showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = `Thank you for completing the quiz. Your answers have been submitted successfully. <div><br>You will receive a notification about your score within 7 working days. Please check your mailbox for updates.</div>`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden'); // Show the back to test page button
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

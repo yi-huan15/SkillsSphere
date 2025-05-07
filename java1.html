@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Java Script - Level 1</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "What is the correct way to print \"Hello,World!\" in Java?", options: ["System.print(\"Hello,World!\");", "echo \"Hello,World!\";", "System.out.println(\"Hello,World!\");", "print(\"Hello,World!\");"], answer: "c" },
+            { question: "How do you write a single-line comment in Java?", options: ["&lt;!-- This is a comment --&gt;", "// This is a comment", "/* This is a comment */", "# This is a comment"], answer: "b" },
+            { question: "Which of the following declares an integer variable in Java?", options: ["int x = 10;", "x = 10;", "integer x = 10;", "var x = 10;"], answer: "a" },
+            { question: "What is the correct file extension for Java source files?", options: [".java", ".jav", ".class", ".j"], answer: "a" },
+            { question: "Which keyword is used to define a class in Java?", options: ["define", "class", "struct", "object"], answer: "b" },
+            { question: "What is the default value of an int variable in Java?", options: ["0", "null", "undefined", "1"], answer: "a" },
+            { question: "Which method is called when an object is created?", options: ["main()", "constructor", "static method", "class method"], answer: "b" },
+            { question: "What is used to store multiple values in a single variable?", options: ["Array", "Variable", "Function", "Loop"], answer: "a" },
+            { question: "What is the correct way to create an object in Java?", options: ["new ClassName();", "ClassName();", "object.create(ClassName);", "ClassName.new();"], answer: "a" },
+            { question: "Which statement is used to exit a loop in Java?", options: ["stop;", "break;", "exit;", "return;"], answer: "b" },
+            { question: "What is encapsulation in Java?", options: ["Hiding data dan providing controlled access through methods", "Using loops to repeat code", "A feature that allows multiple inheritance ", "A way to declare a method"], answer: "a" },
+            { question: "Which statement about method overloading is correct?", options: ["Overloaded methods must have the same parameter list ", "Overloaded methods must have different parameter lists", "Overloaded methods must have different return types", "Overloaded methods must belong to different classes"], answer: "b" },
+            { question: "Which access modifier makes a variable accessible only within the same package?", options: ["public", "private", "protected", "(default)(no modifier)"], answer: "d" },
+            { question: "What is the purpose of the keyword in Java?", options: ["It refers to the current object ", "It refers to the parent class", "It is used to call static methods", "It is used to define a new object"], answer: "a" },
+            { question: "Which statement about constructors is true?", options: ["A constructor must have a void return type", "A constructor can have a different name than the class", "A constructor initializes an object when it is created ", "d)	A constructor cannot have parameters"], answer: "c" },
+            { question: "What happens if an exception is not caught in Java?", options: ["The program ignores it and continues running ", "The program stops execution and prints an error message", "The exception is automatically fixed ", "The program restarts"], answer: "b" },
+            { question: "Which of the following is true about ArrayList in Java?", options: ["ArrayList has a fixed size", "ArrayList allows dynamic resizing ", "ArrayList only stores primitive data types", "ArrayList is faster than arrays in all cases"], answer: "b" },
+            { question: "What is true about static methods in Java?", options: ["Static methods belong to the class rather than an instance", "Static methods can only be called from other static methods", "Static methods can access instance variables", "Static methods must have the same name as the class"], answer: "a" },
+            { question: "Which keyword is used in Java for inheritance?", options: ["extends", "inherits", "implements", "super"], answer: "a" },
+            { question: "What is the key difference between an interface and an abstract class?", options: ["An interface can have constructors, but an abstract class cannot ", "An interface cannot have method implementations before Java 8", "An abstract class cannot have instance variables ", "An interface allows multiple inheritance, but an abstract class does not"], answer: "b" }
+        ];
+        // Function to shuffle options for each question
+        function shuffleOptions() {
+            questions.forEach(question => {
+            for (let i = question.options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [question.options[i], question.options[j]] = [question.options[j], question.options[i]];
+            }
+            });
+        }
+
+        // Shuffle options before starting the quiz
+        shuffleOptions();
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        isQuizStarted = true; // Mark quiz as started
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionData = questions[currentQuestionIndex];
+        const questionElement = document.createElement('p');
+        questionElement.textContent = questionData.question;
+        questionContainer.appendChild(questionElement);
+
+        questionData.options.forEach((option, index) => {
+            const optionElement = document.createElement('div');
+            optionElement.classList.add('option-container');
+            optionElement.innerHTML = `
+            <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+            <label for="q${currentQuestionIndex}_${index}">${option}</label>
+            `;
+            questionContainer.appendChild(optionElement);
+        });
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (!selectedOption) {
+                alert('Please select an answer before proceeding.');
+                return;
+            }
+
+            if (selectedOption.value === questions[currentQuestionIndex].answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            document.getElementById('result').textContent = `Your score: ${score} / ${questions.length}`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('retakeButton').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden');
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Korean Language - Level 1</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "다음 중 '감사합니다'의 정확한 한국어 표현은 무엇인가요?<br>Which of the following is the correct Korean expression for 'thank you'?", options: ["고마워요 (gomawoyo)", "감사합니다 (gamsahamnida)", "미안해요 (mianhaeyo)", "사랑해요 (salanghaeyo)"], answer: "b" },
+            { question: "다음 중 '잘 지내세요'에 대한 올바른 한국어 표현은 무엇입니까?<br>Which of the following is the correct Korean expression for 'How are you'?", options: ["잘 지내요? (jal jinaeyo?)", "뭐 해요? (mwo haeyo?)", "어디 가요? (eodi gayo?)", "언제 가요? (eonje gayo?)"], answer: "a" },
+            { question: "'고맙습니다' (gomapseumnida)는 무엇을 의미하나요?<br>What does '고맙습니다' (gomapseumnida) means?", options: ["안녕하세요 (annyeonghaseyo)", "죄송합니다 (joesonghabnida)", "감사합니다 (gamsahabnida)", "안녕히 가세요 (annyeonghi gaseyo)"], answer: "c" },
+            { question: "다음 중 '이해합니다'에 대한 올바른 한국어 표현은 무엇입니까?<br>Which of the following is the correct Korean expression for 'I understand'?", options: ["이해하지 못해요 (ihaehaji moshaeyo)", "이해해요 (ihaehaeyo)", "도와주세요 (dowajuseyo)", "반갑습니다 (bangabseubnida)"], answer: "b" },
+            { question: "다음 중 '저는 학생입니다'에 대한 올바른 한국어 표현은 무엇입니까?<br>Which of the following is the correct Korean expression for 'I am a student'?", options: ["저는 선생님이에요 (jeoneun seonsaengnim-ieyo)", "저는 학생이에요 (jeoneun hagsaeng-ieyo)", "너는 학생이에요 (neoneun hagsaeng-ieyo)", "저는 의사예요 (jeoneun uisayeyo)"], answer: "b" },
+            { question: "다음 중 '사랑해'에 대한 올바른 한국어 표현은 무엇입니까?<br>Which of the following is the correct Korean expression for 'I love you'?", options: ["미안해요 (mianhaeyo)", "사랑해요 (salanghaeyo)", "감사합니다 (gamsahabnida)", "반가워요 (bangawoyo)"], answer: "b" },
+            { question: "다음 중 '학교'에 대한 올바른 한국어 표현은 무엇입니까?<br>Which of the following is the correct Korean expression for 'School'?", options: ["병원 (byeong-won)", "상점 (sangjeom)", "학교 (haggyo)", "회사 (hoesa)"], answer: "c" },
+            { question: "'미안해요' (mianhaeyo)의 의미는 무엇인가요?<br>What does '미안해요' (mianhaeyo) mean?", options: ["감사합니다 gamsahabnida", "죄송합니다 joesonghabnida", "안녕히 가세요 annyeonghi gaseyo", "안녕하세요 annyeonghaseyo"], answer: "b" },
+            { question: "다음 중 '친구'에 대한 올바른 한국어 표현은 무엇입니까?<br>Which of the following is the correct Korean expression for 'friend'?", options: ["선생님 seonsaengnim", "친구 chingu", "학생 hagsaeng", "부모님 bumonim"], answer: "b" },
+            { question: "다음 중 '어디에 계십니까'에 대한 올바른 한국어 표현은 무엇입니까?<br>Which of the following is the correct Korean expression for 'Where are you'?", options: ["몇 시에요? myeoch sieyo?", "어디에요? eodieyo?", "잘 지내요? jal jinaeyo?", "언제에요? eonjeeyo?"], answer: "b" },
+            { question: "다음 중 '음식'에 대한 올바른 한국어 표현은 무엇입니까?<br>Which of the following is the correct Korean expression for 'Food'?", options: ["물 mul", "음식 eumsig", "책 chaeg", "영화 yeonghwa"], answer: "b" },
+            { question: "다음 중 '좋다'에 대한 올바른 한국어 표현은 무엇입니까?<br>Which of the following is the correct Korean expression for 'It's good'?", options: ["좋아하지 않아요", "사랑해요", "좋아요", "나빠요"], answer: "c" },
+            { question: "다음 중 한국어에서 '먹다'의 정중한 표현은 무엇입니까?<br>What is the polite form of 'to eat' in Korean?", options: ["마셔요 masyeoyo", "일어요 il-eoyo", "자요 jayo", "먹어요 meog-eoyo"], answer: "d" },
+            { question: "다음 중 '쌀'에 대한 올바른 한국어 표현은 무엇입니까?<br>Which of the following is the correct Korean expression for 'Rice'?", options: ["국 gug", "밥/식사  bab/sigsa", "과일 gwail", "음료수 eumlyosu"], answer: "b" },
+            { question: "다음 중 문법적으로 올바른 문장은 무엇인가요?", options: ["나는 학교에 가요 매일.", "매일 나는 학교에 가요.", "나는 매일 학교에 가요.", "학교에 가요 나는 매일."], answer: "c" },
+            { question: "'저도 가고 싶어요' (jeodo gago sipeoyo)에서 '도' (do)의 의미는 무엇인가요?", options: ["나", "도/또", "그리고", "그러나"], answer: "b" },
+            { question: "다음 중 '하십니다' (hasimnida) 형태로 된 동사는 무엇인가요?", options: ["하다", "가다", "먹다", "오다"], answer: "a" },
+            { question: "'그럼' (geureom)의 뜻은 무엇인가요?", options: ["맞아요", "그러면", "왜냐하면", "그러나"], answer: "b" },
+            { question: "'을/를' (eul/reul)의 올바른 용법은 무엇인가요?", options: ["주격 조사", "목적격 조사", "장소 조사", "시간 조사"], answer: "b" },
+            { question: "다음 중 '동사 어간 + 고 싶다' (verb stem + go sipda) 구조가 포함된 문장은 무엇인가요?", options: ["나는 책을 읽고 싶어요.", "나는 책을 읽어요.", "나는 책을 읽고 있어요.", "나는 책을 읽습니다."], answer: "a" }
+        ];
+        // Function to shuffle options for each question
+        function shuffleOptions() {
+            questions.forEach(question => {
+            for (let i = question.options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [question.options[i], question.options[j]] = [question.options[j], question.options[i]];
+            }
+            });
+        }
+
+        // Shuffle options before starting the quiz
+        shuffleOptions();
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        isQuizStarted = true; // Mark quiz as started
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionData = questions[currentQuestionIndex];
+        const questionElement = document.createElement('p');
+        questionElement.textContent = questionData.question;
+        questionContainer.appendChild(questionElement);
+
+        questionData.options.forEach((option, index) => {
+            const optionElement = document.createElement('div');
+            optionElement.classList.add('option-container');
+            optionElement.innerHTML = `
+            <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+            <label for="q${currentQuestionIndex}_${index}">${option}</label>
+            `;
+            questionContainer.appendChild(optionElement);
+        });
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (!selectedOption) {
+                alert('Please select an answer before proceeding.');
+                return;
+            }
+
+            if (selectedOption.value === questions[currentQuestionIndex].answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            document.getElementById('result').textContent = `Your score: ${score} / ${questions.length}`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('retakeButton').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden');
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

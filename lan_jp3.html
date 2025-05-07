@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Japanese Language - Level 3</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+            question: `文章を読んで質問に答えてください。<br>
+            <div>Read the passage and answer the question.</div><br><br>
+            <div>Japanese Passage:</div><br>
+            <div>
+                現代社会において、テクノロジーはますます私たちの生活に不可欠なものとなり、仕事や教育、医療など、さまざまな分野で大きな変化をもたらしている。
+                <br>しかし、その進展とともに、テクノロジーの普及が引き起こす問題も増えている。一例として、インターネットを通じた情報の流通が挙げられる。
+                <br>情報は瞬時に世界中に広がり、私たちの生活を便利にした一方で、フェイクニュースやプライバシーの侵害など、悪用される危険性も高まっている。<br>br>
+                また、テクノロジーの進化は労働市場にも大きな影響を与えており、特に人工知能（AI）の登場によって、仕事の自動化が進む中で雇用の不安定化が懸念されている。
+                <br>人々はAIに代替されることを恐れ、職業の選択肢が狭まることを心配している。さらに、テクノロジーが進むことで、私たちの社会がより孤立し、
+                <br>人々のつながりが希薄になる可能性があると指摘する専門家もいる。<br>br>
+                このように、テクノロジーの進化は非常に大きな影響を与える一方で、それに伴う問題にも目を向ける必要がある。今後の社会において、
+                <br>テクノロジーをどのように活用し、どのように問題に対処していくのかが重要な課題となるだろう。
+            </div><br><br>
+            <div>Question:</div><br>
+            <div>
+                この文章におけるテクノロジーに対する著者の意見について、あなたの考えを述べなさい。
+                <br>具体的な例を挙げて、テクノロジーの進化が私たちの生活に与える影響について、どのように問題と解決策を考えているのかを述べてください。
+            </div><br>
+            <div>
+                In this passage, what is the author’s opinion on technology? Express your thoughts on the subject. Specifically, 
+                <br>explain how the evolution of technology affects our lives, and how the author views the problems and solutions related to it. 
+                <br>Provide specific examples to support your opinion.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `文章を読んで質問に答えてください。<br>
+            <div>Read the passage and answer the question.</div><br><br>
+            <div>Japanese Passage:</div><br>
+            <div>
+                現代社会において、環境問題はますます重要な課題となっている。温暖化、資源の枯渇、生物多様性の減少など、地球規模で進行している問題は、
+                <br>私たちの生活にも深刻な影響を与えている。特に、エネルギー問題は非常に大きな課題であり、再生可能エネルギーの導入を進める必要性が叫ばれている。
+                <br>しかし、再生可能エネルギーの導入には、高コストや技術的な課題が存在しており、それらを解決するための研究と投資が急務である。<br><br>
+                また、環境問題の解決には、個人の意識改革も重要な役割を果たす。リサイクルや省エネルギーの実践、環境に配慮した消費行動など、
+                <br>私たち一人一人ができることは多い。しかし、現実的には多くの人々が環境問題に対する関心を持っていないか、関心があっても行動に移さないことが多い。
+                <br>これを変えるためには、教育や啓蒙活動を通じて、より多くの人々に環境問題の深刻さを伝え、積極的に行動を起こさせることが必要だ。<br><br>
+                これらの問題に立ち向かうためには、政府、企業、市民が協力し合い、持続可能な社会を築くための具体的な取り組みを進めることが重要である。
+            </div><br><br>
+            <div>Question:</div><br>
+            <div>
+                この文章の内容について、環境問題に関するあなたの考えを述べなさい。特に、再生可能エネルギーの導入における課題、
+                <br>個人の役割、そしてその解決策について具体的に考えを述べ、解決方法を提案してください。
+            </div><br>
+            <div>
+                Based on the content of this passage, express your thoughts on environmental issues. Specifically, 
+                <br>discuss the challenges related to the introduction of renewable energy, the role of individuals, 
+                <br>and how personal actions can make a difference. Propose solutions to address the challenges mentioned in the passage.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `Japanese Passage:<br>
+            <div>
+                日本の少子高齢化問題は、社会全体に深刻な影響を与えており、特に経済や福祉制度において大きな課題となっている。出生率が低下し、高齢者の割合が増加する中、
+                <br>働き手の人口が減少しているため、労働力不足が深刻化している。また、高齢者の増加により、医療や介護の需要も高まり、これらを支えるための財源の確保が急務となっている。<br><br>
+                一方で、少子高齢化を逆転させるための政策や改革が提案されている。たとえば、若者の結婚や出産を促進するために、政府は子育て支援や保育所の充実、
+                <br>働き方改革などを進めている。しかし、これらの施策が十分に効果を上げるためには、長期的な視点で社会全体の意識改革が必要である。さらに、少子高齢化に対応するためには、
+                <br>労働市場の多様化や移民受け入れの検討など、さまざまな取り組みが求められる。
+            </div><br><br>
+            <div>Question:</div><br>
+            <div>
+                この文章に基づいて、少子高齢化問題に対するあなたの意見を述べなさい。特に、出生率を上げるための政策や改革、移民受け入れの検討、社会全体の意識改革に対するあなたの考えを具体的に述べてください。
+            </div><br>
+            <div>
+                Based on this passage, express your opinion on the issue of the declining birthrate and aging population. Specifically, discuss your thoughts on the policies and reforms 
+                <br>proposed to increase the birthrate, the consideration of accepting immigrants, and the need for societal awareness change. Be specific in your response.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `Reading Comprehension with Critical Thinking Question:<br><br>
+            <div>Japanese Passage:</div><br>
+            <div>
+                近年、都市化が急速に進んでいる一方で、地方の過疎化が進行している。都市では仕事や生活の利便性が向上し、多くの若者が都市に移住することで経済が活性化している。しかし、
+                <br>地方の地域社会は年々人口が減少し、特に高齢者が中心となっている地域では、医療や介護の提供が困難になってきている。さらに、過疎化が進むことで、
+                <br>商業施設や教育機関の閉鎖が相次ぎ、地域全体の活力が低下している。<br><br>
+                このような状況に対して、政府は地方創生を進めるための政策を打ち出している。例えば、移住促進や農業支援、観光資源の開発など、地方に新しい産業を生み出すことを目指している。
+                <br>しかし、これらの取り組みが短期間で効果を上げることは難しく、地方における人々の意識改革と長期的な支援が必要だとされている。
+            </div><br><br>
+            <div>Question:</div><br>
+            <div>
+                この文章に基づいて、地方創生に必要な取り組みについて自分の考えを述べなさい。特に、以下の点について自分の意見を具体的に述べてください。
+            </div><br>
+            <div>
+                Based on this passage, express your thoughts on the necessary efforts for rural revitalization. Specifically, discuss your opinion on the following points:<br>
+                1.	地方における産業の多様化 Diversification of industries in rural areas
+                2.	移住促進のための施策 Measures to promote migration
+                3.	地域住民の意識改革 Awareness change among local residents
+            </div><br><br>
+            <div>
+                また、地方創生を成功させるために、どのような新しいアプローチが必要だと考えますか？<br>
+                Additionally, what new approaches do you think are necessary for successfully achieving rural revitalization?
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `Reading Comprehension with Critical Thinking Question:<br><br>
+            <div>Japanese Passage:</div><br>
+            <div>
+                地球温暖化は、世界中で急速に進行しており、その影響はすでに様々な地域で実感されています。特に、極地の氷が溶けることで海面が上昇し、低地に住む人々や島嶼国に深刻な影響を与えています。
+                <br>加えて、異常気象が増加し、熱波や豪雨などの自然災害が頻繁に発生するようになりました。これらの影響を受けて、多くの国々は温暖化対策を強化し、再生可能エネルギーの導入や温室効果ガスの削減に取り組んでいます。<br><br>
+                一方で、地球温暖化の進行を食い止めるためには、国際的な協力が不可欠です。各国が協定を結び、共同で温暖化対策を進める必要があります。しかし、先進国と途上国の間には経済的な格差があり、
+                <br>途上国は十分な資金や技術を持っていないため、温暖化対策に対する参加が難しいという問題があります。この問題を解決するためには、国際的な支援体制を強化し、途上国が温暖化対策に参加しやすくするための仕組み作りが求められます。
+            </div><br><br>
+            <div>Question:</div><br>
+            <div>
+                この文章に基づいて、地球温暖化問題に対する国際的な協力の必要性についてあなたの考えを述べなさい。特に、途上国への支援や技術提供の重要性、また先進国と途上国の協力体制を強化するための方法について、具体的に提案しなさい。
+            </div><br>
+            <div>
+                Based on this passage, express your thoughts on the necessity of international cooperation to address the issue of global warming. In particular, discuss the importance of support and 
+                <br>technology transfer to developing countries, and provide specific suggestions on how to strengthen the cooperation between developed and developing countries.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `Critical Thinking Question on Social Issues:<br><br>
+            <div>Japanese Passage:</div><br>
+            <div>
+                近年、SNS（ソーシャル・ネットワーキング・サービス）の利用が急増し、私たちのコミュニケーションのスタイルに大きな変化をもたらしました。
+                <br>SNSを利用することで、世界中の情報を瞬時に得ることができる一方で、フェイクニュースや誤情報の拡散が問題となっています。
+                <br>特に、選挙や政治的な議論において、SNSが意図的に誤った情報を広めるために利用されることがあり、民主主義の健全性が脅かされています。<br><br>
+                また、SNSにおける個人情報の漏洩やプライバシーの侵害も深刻な問題です。多くの人々が自分の生活をSNSで公開することで、
+                <br>個人情報が不正に使用されるリスクが高まっています。これらの問題を解決するためには、SNSの利用に関する規制や教育を進める必要があります。
+            </div><br><br>
+            <div>Question:</div><br>
+            <div>
+                この文章に基づいて、SNSの利用に関する問題についてあなたの考えを述べなさい。特に、フェイクニュースの拡散や個人情報の漏洩について、どのような対策を講じるべきか、具体的に提案しなさい。
+            </div><br>
+            <div>
+                Based on this passage, express your thoughts on the issues related to the use of social media (SNS). In particular, discuss what measures should be taken 
+                <br>to address the spread of fake news and the leakage of personal information, and provide specific suggestions.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `Essay Writing Question:<br><br>
+            <div>Topic:</div><br>
+            <div>
+                「テクノロジーの進化が人間社会に与える影響」<br>
+                "The Impact of Technological Advancements on Human Society"
+            </div><br><br>
+            <div>
+                テクノロジーは近年急速に進化しており、それが私たちの生活や仕事に多大な影響を与えています。インターネット、人工知能（AI）、
+                <br>ロボット工学などの新しい技術は、便利さや効率を向上させる一方で、さまざまな問題も引き起こしています。
+                <br>例えば、プライバシーの侵害や職業の自動化による失業問題、そして人間関係の希薄化が挙げられます。
+                <br>Technology has been rapidly advancing in recent years, significantly impacting our daily lives and work. 
+                <br>New technologies such as the internet, artificial intelligence (AI), and robotics have improved convenience and efficiency, 
+                <br>but they have also caused various issues. For example, concerns over privacy, unemployment due to job automation, 
+                <br>and the weakening of human relationships are some of the problems.
+            </div><br><br>
+            <div>
+                あなたは、テクノロジーの進化が人間社会に与える影響についてどう考えますか？テクノロジーの利点と欠点を挙げ、そのバランスをどのように取るべきかについて、自分の意見を述べなさい。
+                <br>What do you think about the impact of technological advancements on human society? Discuss the benefits and drawbacks of technology, 
+                <br>and express your opinion on how we should balance them.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        const questionData = questions[currentQuestionIndex];
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionElement = document.createElement('p');
+        questionElement.innerHTML = `${questionData.question}`;
+        questionContainer.appendChild(questionElement);
+
+        if (questionData.inputAnswer) {
+            const inputBox = document.createElement('div');
+            inputBox.innerHTML = questionData.renderInputBox();
+            questionContainer.appendChild(inputBox);
+        } else if (questionData.options) {
+            questionData.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option-container');
+                optionElement.innerHTML = `
+                <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+                <label for="q${currentQuestionIndex}_${index}">${option}</label>
+                `;
+                questionContainer.appendChild(optionElement);
+            });
+        }
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const userInput = document.querySelector('textarea[name="userAnswer"]');
+            if (!userInput || userInput.value.trim() === '') {
+            alert('Please input your answer before proceeding.');
+            return;
+            }
+
+            // Save the user's input answer for the current question
+            questions[currentQuestionIndex].saveAnswer(userInput.value.trim());
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+            } else {
+            showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = `Thank you for completing the quiz. Your answers have been submitted successfully. <div><br>You will receive a notification about your score within 7 working days. Please check your mailbox for updates.</div>`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden'); // Show the back to test page button
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

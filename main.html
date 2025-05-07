@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+    
+        <nav class="nav">
+            <button onclick="window.location.href='test.html'" class="func-button">Skills Test Platform</button>
+            <button onclick="window.location.href='video.html'" class="func-button">Upload Video</button>
+            <button onclick="window.location.href='resume.html'" class="func-button">Resume Optimizer</button>
+        </nav>
+
+        <!-- Recommended and Popular Learning Skills Section -->
+        <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+            <h2>Recommended for You</h2>
+            <div class="flex overflow-x-auto space-x-4">
+                <img src="/weather_app.png" alt="Weather App" class="h-24">
+                <img src="/python_notes.png" alt="Python Notes" class="h-24">
+                <img src="/html_course.png" alt="HTML Full Course" class="h-24">
+                <img src="/improve_logic.png" alt="Improve Logic" class="h-24">
+            </div>
+        </div>
+
+        <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+            <h2>Popular Learning Skills</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-orange-200 p-4 rounded-lg text-center">Programming and Tech</div>
+                <div class="bg-orange-200 p-4 rounded-lg text-center">Graphics and Design</div>
+                <div class="bg-orange-200 p-4 rounded-lg text-center">Digital Marketing</div>
+                <div class="bg-orange-200 p-4 rounded-lg text-center">Language</div>
+                <div class="bg-orange-200 p-4 rounded-lg text-center">Video and Animation</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

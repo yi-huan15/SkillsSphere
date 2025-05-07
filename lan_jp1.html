@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Japanese Language - Level 1</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "次の文の（　）に入る最も適切な言葉はどれですか？<br>Which word best fits in the blank of the following sentence?<br><br>先生に（　）から、宿題を忘れたことを言えなかった。<br>Because I (　) by the teacher, I couldn't tell them that I forgot my homework.", options: ["おこられて", "おこられる", "おこる", "おこった"], answer: "b" },
+            { question: "この漢字の読み方として正しいのはどれですか？<br>What is the correct reading (pronunciation) of the underlined kanji?<br><br>質問：「昨夜は早く寝ました。」<br>(Last night I went to bed early.)", options: ["さくよる (sakuyoru)", "きのうよる (kinou yoru)", "さくや (sakuya)", "せんや (senya)"], answer: "c" },
+            { question: "（　）に入るもっとも自然な表現はどれですか？<br>Which of the following best completes the sentence?<br><br>質問：友達が病気で学校を休んだので、お見舞いに（　）。<br>Sentence: My friend was sick and didn’t come to school, so I (　) to visit them.", options: ["行きました", "行きます", "行こう", "行け"], answer: "a" },
+            { question: "この文の意味に合う言い換えはどれですか？<br>Which sentence best matches the meaning of this one?<br><br>質問：「彼は約束を守るどころか、連絡さえしてこなかった。」<br>(Far from keeping his promise, he didn’t even contact me.)", options: ["約束は守らなかったが、連絡はあった", "約束も守らなかったし、連絡もなかった", "約束を守ったけれど、連絡がなかった", "約束を守らなかったが、それは仕方なかった"], answer: "b" },
+            { question: "（　）に入る最も適切な語はどれですか？<br>Choose the most appropriate word to fill in the blank.<br><br>質問：あの俳優の演技には、観客を（　）力がある。<br>Sentence: That actor's performance has the power to (　) the audience.", options: ["ひかれる", "ひきつける", "ひかせる", "ひきしめる"], answer: "b" },
+            { question: "この漢字の正しい読み方はどれですか？<br>What is the correct reading of the underlined kanji?<br><br>Sentence:公園で子どもたちが遊んでいる。<br>The children are playing in the park.", options: ["あそんでいる", "およいでいる", "うたっている", "すんでいる"], answer: "a" },
+            { question: "（　）に入るもっとも自然な言葉はどれですか？<br>Which word fits most naturally in the blank?<br><br>Sentence:忙しかったので、宿題を（　）。<br>Because I was busy, I (　) my homework.", options: ["やった", "やらなかった", "やっている", "やれる"], answer: "b" },
+            { question: "この文の意味に一番近いものはどれですか？<br>Which sentence is closest in meaning?<br><br>Sentence:田中さんは日本に来たばかりなのに、日本語がとても上手です。<br>Even though Mr. Tanaka just came to Japan, he is very good at Japanese.", options: ["田中さんは長い間日本に住んでいる。", "田中さんは日本語を勉強したことがない。", "田中さんは日本に来たばかりだけど、日本語がうまい。", "田中さんは日本に行きたくない。"], answer: "c" },
+            { question: "次の文章を読んで、（　）に入るもっとも適切な語を選びなさい。<br><br>Sentence:最近では、スマートフォンを持っていない人のほうが（　）。<br>Lately, it's (　) to find people who don't have a smartphone.", options: ["ふつうです", "まれです", "しょうじきです", "たいくつです"], answer: "b" },
+            { question: "（　）に入る言葉として最も適切なのはどれですか？<br>Which word best fits the blank?<br><br>Sentence:電車に（　）とき、財布を落としました。<br>When I (  ) on the train, I dropped my wallet.", options: ["乗った", "乗って", "乗る", "乗り"], answer: "a" },
+            { question: "次の言葉の意味に最も近いのはどれですか？<br><br>Which is closest in meaning to the word 工夫 (kufuu)?<br>Word: 工夫（くふう）", options: ["問題を放っておくこと", "上手にやるために考えること", "面倒なことを避けること", "誰かに頼ること"], answer: "b" },
+            { question: "次の文の（　）に入るもっとも適切な語句はどれですか？<br>Which word is most appropriate to fill in the blank in the following sentence?<br><br>Sentence:急がなければ、電車に（　）かもしれない。<br>If I don’t hurry, I might (　) the train.", options: ["間に合って", "間に合わない", "間に合う", "間に合え"], answer: "b" },
+            { question: "この中で、'あきれる'の正しい使い方はどれですか？<br>Which sentence uses the word 'あきれる' (to be appalled) correctly?", options: ["彼の勇気にあきれた。", "彼の無責任さにあきれた。", "美しい景色にあきれた。", "新しいアイデアにあきれた。"], answer: "b" },
+            { question: "「部屋の窓を開けてください。」の「開けて」の正しい読み方はどれですか？<br>What is the correct reading of “開けて” in this sentence:<br>Please open the window in the room.", options: ["とけて", "あけて", "ひらけて", "あらわれて"], answer: "b" },
+            { question: "（　）に入るもっとも自然な表現はどれですか？<br><br>Sentence:試験の結果が悪かったので、先生に（　）。<br>Because my test results were bad, I (　) by the teacher.", options: ["しからせた", "しかられた", "しからない", "しからせる"], answer: "b" },
+            { question: "「その場しのぎ」の意味に最も近いのはどれですか？<br>What is the closest meaning of その場しのぎ?", options: ["長く続く対策", "その時だけの対応", "無駄な努力", "丁寧な準備"], answer: "b" },
+            { question: "彼の話はいつも（　）ようで、信じがたい。<br>His stories always sound so (　) that they’re hard to believe.", options: ["現実の", "うそつきな", "作り話の", "大げさな"], answer: "d" },
+            { question: "「昨日は友達と博物館に行きました。」の読み方はどれですか？<br>What is the correct reading of 博物館?", options: ["はくぶつかん", "ばくものかん", "はくもつかん", "はくぶつけん"], answer: "a" },
+            { question: "「〜わけではない」の使い方として正しいのはどれですか？<br>Which sentence correctly uses “〜わけではない” (it’s not that…)?", options: ["日本語が話せないわけではないが、まだ自信がない。", "寒いわけではないので、コートを持っていく。", "彼の話はおもしろいわけではないかも。", "昨日は雨だったわけだった。"], answer: "a" },
+            { question: "天気が悪かった（　）、試合は中止になった。<br>Because the weather was bad, the match was canceled.", options: ["のに", "けれども", "ため", "なら"], answer: "c" }
+        ];
+
+        // Function to shuffle options for each question
+        function shuffleOptions() {
+            questions.forEach(question => {
+            for (let i = question.options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [question.options[i], question.options[j]] = [question.options[j], question.options[i]];
+            }
+            });
+        }
+
+        // Shuffle options before starting the quiz
+        shuffleOptions();
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        isQuizStarted = true; // Mark quiz as started
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionData = questions[currentQuestionIndex];
+        const questionElement = document.createElement('p');
+        questionElement.textContent = questionData.question;
+        questionContainer.appendChild(questionElement);
+
+        questionData.options.forEach((option, index) => {
+            const optionElement = document.createElement('div');
+            optionElement.classList.add('option-container');
+            optionElement.innerHTML = `
+            <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+            <label for="q${currentQuestionIndex}_${index}">${option}</label>
+            `;
+            questionContainer.appendChild(optionElement);
+        });
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (!selectedOption) {
+                alert('Please select an answer before proceeding.');
+                return;
+            }
+
+            if (selectedOption.value === questions[currentQuestionIndex].answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            document.getElementById('result').textContent = `Your score: ${score} / ${questions.length}`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('retakeButton').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden');
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

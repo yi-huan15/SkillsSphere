@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Japanese Language - Level 2</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "「うっかり」の正しい使い方はどれですか？<br>Which sentence correctly uses うっかり (carelessly / by mistake)?", options: ["うっかり準備しておいた。", "うっかりテストを忘れた。", "うっかり丁寧に話した。", "うっかり楽しかった。"], answer: "b" },
+            { question: "日本に来てから5年経つが、日本文化については知らないこと（　）だ。<br>'Even though I’ve been in Japan for 5 years, there are ( ) I don’t know about the culture.'", options: ["だけ", "しか", "ばかり", "ごろ"], answer: "c" },
+            { question: "「足を運ぶ」の正しい使い方はどれですか？<br>Which sentence correctly uses the idiom '足を運ぶ' (to go out of one's way to visit)?", options: ["美術館に足を運んで、名画を見た。", "足を運んで寝た。", "彼は足を運ぶのが下手だ。", "足を運んだら足が痛くなった。"], answer: "a" },
+            { question: "そんなひどいことを言うなんて、彼は傷つけようと（　）。<br>'To say something so terrible means he (  ).'", options: ["していない", "思っている", "言われる", "なるべく"], answer: "b" },
+            { question: "文章を読んで質問に答えてください。<br>Read the passage and answer the question.<br>Japanese Passage:<br>最近では、環境問題に対する意識が高まる一方で、それに対して「どう行動すればいいのか分からない」という人も少なくない。プラスチックの使用を減らす、エコバッグを持ち歩く、省エネ家電を選ぶなど、できることは多くあるが、生活習慣を変えることに抵抗を感じる人も多い。つまり、知識と行動の間にはギャップがあるのである。<br>このギャップを埋めるには、単に情報を提供するだけではなく、行動を促すための「きっかけ」や「動機づけ」が必要だと考えられている。たとえば、地域でのリサイクル活動や、学校での体験型の学習は、そうした意識と行動をつなげる効果的な方法だとされている。<br><br>上の文章の筆者の主張に最も合っているものはどれですか？", options: ["環境問題は個人の努力では解決できない。", "知識よりもまず行動が大切である。", "行動につなげるためには、外的な動機や機会が重要である。", "リサイクル活動よりもエコバッグの使用の方が効果的である。"], answer: "c" },
+            { question: "彼の説明は分かりやすく、（　）としても納得できる内容だった。", options: ["聞いた", "聞いてみた", "初めて聞いた", "何度も聞いた"], answer: "c" },
+            { question: "ニュアンスに基づいて空欄を埋めるのに最も適切な単語を選択してください。<br>Choose the most appropriate word to fill in the blank based on nuance.<br>Sentence:<br>あの作家の小説は現実と幻想の（　）が巧妙に描かれている。", options: ["境目", "境界線", "間", "境界"], answer: "a" },
+            { question: "彼の努力がなかったら、このプロジェクトは（　）なかっただろう。<br>If it weren’t for his efforts, this project probably (  ).", options: ["成功している", "成功しない", "成功していた", "成功しなかった"], answer: "d" },
+            { question: "彼の話はいつも（　）で、どこまでが本当なのか分からない。<br>His stories are always (  ), so I never know what’s true.", options: ["誠実", "素直", "大げさ", "堅実"], answer: "c" },
+            { question: "彼は、会社の方針に不満があるようだが、上司の前では（　）。<br>He seems dissatisfied with the company’s policy, but in front of his boss, he remains (  ).", options: ["本音を言っている", "我慢できない", "黙っている", "意見を述べている"], answer: "c" },
+            { question: "文章を読んで質問に答えてください。<br>Read the passage and answer the question.<br>Japanese Passage:<br>人は、自分の考えや価値観を他人に理解してもらいたいと思う生き物である。しかし、それがうまくいかないとき、相手を否定したり、自分の正しさを強調しようとすることがある。こうした態度は、むしろ対立を深める結果となり、建設的な対話を妨げてしまう。相手の立場や背景を理解しようとする姿勢こそが、本当の意味での「理解」を生む第一歩となるのではないだろうか。<br>Question:<br>筆者の考えに最も近いのはどれか？<br>Which statement best matches the author's opinion?", options: ["自分の考えを主張することが理解を生む", "相手を否定しても自分を理解させるべき", "対立を避けるために対話を避ける", "理解のためには、まず相手の立場を知ろうとする姿勢が必要"], answer: "d" },
+            { question: "この映画は、ストーリー（　）、映像の美しさという点では一級品だ。<br>Putting the story (  ), this film is top-tier in terms of its visuals.", options: ["はさておき", "にしては", "に関して", "とはいえ"], answer: "a" },
+            { question: "彼女は、私にもっと早く（　）ように言った。<br>She told me to (   ) earlier.", options: ["起きる", "起こす", "起きろ", "起きさせる"], answer: "d" },
+            { question: "彼の提案にはいくつか（　）があるので、もう少し検討したほうがいい。<br>There are several issues with his proposal, so we should consider it a bit more.", options: ["問題", "質問", "資料", "部分"], answer: "a" },
+            { question: "文章を読んで質問に答えてください。<br>Read the passage and answer the question.<br>Japanese Passage:<br>日本では、過去数十年の間に急速な経済成長を遂げた一方で、その成長がもたらした社会的な格差や環境への負担も無視できない問題となっている。特に、都市と地方の間に広がる経済的格差は、貧困層の増加や過疎化を引き起こし、社会全体に影響を与えている。このような現状に対処するためには、国の政策だけでなく、地域社会や企業の協力も欠かせない。<br><br>Question:<br>この文章の主題に最も関連するものはどれか？<br>The main topic of the passage is most closely related to:", options: ["日本の経済成長の背景とその影響", "地方経済の活性化策について", "貧困層の増加とその対策", "環境問題とその改善策"], answer: "a" },
+            { question: "彼がそんなことをした理由は、（　）か、まだ私には理解できない。<br>The reason he did such a thing, (  ), is still unclear to me.", options: ["いくら考えても", "たとえ考えても", "どんなに考えても", "もし考えても"], answer: "c" },
+            { question: "彼の発言は、私たちの期待を（　）ようなもので、正直に言ってショックだった。<br>His remark was something that (  ) our expectations, and honestly, it was shocking.", options: ["裏切る", "背負う", "超える", "承認する"], answer: "a" },
+            { question: "文章を読んで質問に答えてください。<br>Read the passage and answer the question.<br>Japanese Passage:<br>最近の研究によると、感情を上手にコントロールできる人は、ストレスの多い状況でも冷静さを保ち、仕事やプライベートでもより良い人間関係を築くことができるとされている。しかし、感情をコントロールしすぎると、自分の気持ちに対して正直でなくなり、逆に精神的な負担を感じることもあるため、バランスが重要だと専門家は指摘している。<br><br>Question:<br>この文章の主題は何か？<br>What is the main topic of the passage?", options: ["感情コントロールの重要性とその限界", "ストレスの多い状況での人間関係", "仕事における感情の管理方法", "精神的な負担の原因と対策"], answer: "a" },
+            { question: "文章を読んで質問に答えてください。<br>Read the passage and answer the question.<br>Japanese Passage:<br>日本の伝統文化は長い歴史の中で、多くの外国の文化を取り入れ、独自の形に進化してきた。特に食文化においては、外国から伝わった技術や食材を取り入れ、それらを日本人の口に合うように改良してきた。このような文化的な適応能力は、柔軟な考え方や他国の文化を尊重する姿勢から来ていると考えられる。<br><br>Question:<br>この文章から最も重要な点は何か？<br>The most important point from this passage is:", options: ["日本の食文化は外国からの影響を強く受けている。", "日本の伝統文化は、他国の文化を排除してきた。", "日本は外国文化に対して柔軟で受容的な態度を持っている。", "日本の食文化は、外来の技術をそのまま受け入れている。"], answer: "c" },
+            { question: "その議論は、みんなの意見が（　）になり、最終的に結論が出なかった。<br>The discussion ended without a conclusion because everyone’s opinions (  ).", options: ["一致", "漠然", "明確", "顕著"], answer: "a" }
+        ];
+        // Function to shuffle options for each question
+        function shuffleOptions() {
+            questions.forEach(question => {
+            for (let i = question.options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [question.options[i], question.options[j]] = [question.options[j], question.options[i]];
+            }
+            });
+        }
+
+        // Shuffle options before starting the quiz
+        shuffleOptions();
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        isQuizStarted = true; // Mark quiz as started
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionData = questions[currentQuestionIndex];
+        const questionElement = document.createElement('p');
+        questionElement.textContent = questionData.question;
+        questionContainer.appendChild(questionElement);
+
+        questionData.options.forEach((option, index) => {
+            const optionElement = document.createElement('div');
+            optionElement.classList.add('option-container');
+            optionElement.innerHTML = `
+            <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+            <label for="q${currentQuestionIndex}_${index}">${option}</label>
+            `;
+            questionContainer.appendChild(optionElement);
+        });
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (!selectedOption) {
+                alert('Please select an answer before proceeding.');
+                return;
+            }
+
+            if (selectedOption.value === questions[currentQuestionIndex].answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            document.getElementById('result').textContent = `Your score: ${score} / ${questions.length}`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('retakeButton').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden');
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

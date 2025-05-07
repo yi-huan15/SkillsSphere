@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Editing & PS - Level 2</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "You need to composite two images with very different lighting so that the subject from Image A looks natural in Image B’s environment. Which workflow is most appropriate?", options: ["Match Colour adjustment on Image A layer → Blend Mode: Soft Light → Gaussian Blur on mask", "Apply Curves adjustment with a Luminosity blend mode on Image A layer → Create Global Light in Shadows/Highlights → Use Camera Raw Filter for final colour grading", "Use Colour Replacement Tool on Image A → Change Blend Mode to Colour → Apply High Pass filter", "Rasterize Image A → Use Dodge and Burn tools to match highlights and shadows"], answer: "b" },
+            { question: "When preparing an image for high end retouching (frequency separation), which of the following describes the two layers you create?", options: ["Low Frequency Layer: Gaussian Blur to capture colour/tone; <br>High Frequency Layer: Apply Image subtracting blurred layer, set to Linear Light blending", "Low Frequency Layer: Apply Median filter; <br>High Frequency Layer: Use High Pass filter at 0.5px radius, set to Overlay", "Low Frequency Layer: Convert to Smart Object; <br>High Frequency Layer: Apply Unsharp Mask", "Low Frequency Layer: Use Surface Blur; <br>High Frequency Layer: Clone Stamp only on details"], answer: "a" },
+            { question: "You want to create a non destructive vignette that adapts to any canvas size and can be edited later. What’s the best approach?", options: ["Add a new layer → Use Elliptical Marquee → Inverse selection → Fill with black → Lower opacity", "Create a Solid Colour fill layer → Add a Layer Mask → Use Gradient tool (Radial, black-to-white) on the mask → Group and convert to Smart Object", "Use Lens Correction filter → Manually adjust Vignette sliders → Apply as Smart Filter", "Duplicate Background → Convert to Smart Object → Apply Camera Raw Filter vignette"], answer: "b" },
+            { question: "In a complex document with dozens of Smart Objects, you need to update a font across all instances. What’s the most efficient method?", options: ["Open each Smart Object individually, change the font, save, and close", "Use 'Find and Replace Text' in the Type menu on the main document", "Link all text Smart Objects to a single external PSD and edit that source file", "Record an Action that selects each Type layer, changes font, and batch-play it"], answer: "c" },
+            { question: "Which Camera Raw workflow allows you to apply lens corrections, perspective adjustments, and local retouching all in one place, non-destructively?", options: ["Filter → Lens Correction → then Filter → Adaptive Wide Angle → then Filter → Camera Raw Filter", "Filter → Convert for Smart Filters → Filter → Camera Raw Filter (use Profiles, Optics, Transform, and Local tools inside)", "Open image directly in Adobe Camera Raw, perform all edits, then open in Photoshop", "Use Camera Raw as a Smart Object → apply separate Smart Filters for each adjustment"], answer: "b" },
+            { question: "To maintain maximum colour fidelity when exporting for print, which colour space and file format should you use?", options: ["RGB; PNG", "CMYK; TIFF with ZIP compression", "Lab Colour; PSD", "CMYK; JPEG at Quality 12"], answer: "b" },
+            { question: "You need to create a displacement map to wrap a texture naturally over 3D-rendered text. Which steps are correct?", options: ["Duplicate text layer → Rasterize it → Apply Gaussian Blur → Save as PSD → Use Displace filter on texture layer", "Render text to shape → Export paths as Illustrator file → Use that as displacement map", "Create a grayscale rendering of the underlying surface (flattened, high-contrast) → Save as PSD → Apply Displace filter on texture layer using that PSD", "Use Displacement Map adjustment layer → Select text layer as source"], answer: "c" },
+            { question: "Which technique gives you the ability to globally tweak every layer’s opacity and blending mode all at once?", options: ["Select all layers → Press Shift + [", "Add all layers into a Layer Group → Adjust the group’s opacity and blend mode", "Use the 'Global Opacity' slider in the Properties panel", "Convert all layers into a single Smart Object → Adjust its opacity"], answer: "b" },
+            { question: "In a colour grading workflow, you want to isolate shadows, midtones, and highlights and apply different colour balances to each. Which feature lets you do this most precisely?", options: ["Gradient Map", "Selective Colour", "Shadows/Midtones/Highlights adjustment", "Colour Lookup Tables (LUTs)"], answer: "c" },
+            { question: "When using Data Driven Graphics (Variables) to generate multiple versions of an ad, how do you update text fields programmatically?", options: ["Use the Type Tool to edit each text layer manually", "Import a CSV or XML file defining the variables → Bind Layers to Variables → Data Sets → Apply Data Sets", "Write a JavaScript in ExtendScript Toolkit targeting text layers", "Record an Action that types each variation and batch-play it"], answer: "b" },
+            { question: "You’re tasked with creating a 32 bit HDR composite from three bracketed exposures. <br>Which of the following pipelines preserves full dynamic range and allows non destructive adjustments?", options: ["Merge to HDR Pro → Convert to 16 bit → Tone map in Camera Raw → Save as TIFF", "Convert each exposure into a Smart Object → File > Scripts > Statistics > Stack Mode: Median → Apply HDR Toning adjustment", "Load files as Layers → Convert to Smart Object → Camera Raw Filter (Enable 'Merge to HDR') → Edit in 32 bit ProPhoto RGB → Save as PSD", "Use Merge to HDR Pro → Flatten → Apply Curves and Levels"], answer: "c" },
+            { question: "For colour accurate masking of a subject against a green screen, which workflow yields the cleanest edges and preserves fine details like hair?", options: ["Magic Wand → Refine Edge brush → Output to New Layer with Layer Mask", "Select Colour Range → Increase Fuzziness → Mask and apply Smart Radius in Select and Mask workspace", "Channels panel → Alt click on Green channel → Apply Levels to boost contrast → Load as selection → Refine with Decontaminate Colours", "Use Colour Range on Highlights → Invert selection → Apply Gaussian Blur to mask edges"], answer: "c" },
+            { question: "When creating a high fidelity displacement map from a 3D render for print, what bit depth and colour mode should you choose, and why?", options: ["8 bit RGB, because it’s standard and lightweight", "16 bit Grayscale, to retain subtle tonal variations without colour data", "32 bit CMYK, for maximum print colour accuracy", "16 bit RGB, because Photoshop doesn’t support 32 bit displacement maps"], answer: "b" },
+            { question: "You need to perform a content aware scale but preserve certain critical areas (e.g., faces) from distortion. What’s the best method?", options: ["Duplicate layer → Use Content Aware Scale, then manually warp faces afterward", "Convert to Smart Object → Apply Puppet Warp post scale", "Create alpha channel mask for critical areas → Load as protection in the Content Aware Scale options", "Use Liquify with Face-Aware Liquify instead of Content Aware Scale"], answer: "c" },
+            { question: "For precise typographic layout, you want to align text to key points in an underlying image (e.g., aligning headlines to architecture lines). Which feature is most efficient?", options: ["Guides and Smart Guides", "Vanishing Point grid import", "Perspective Warp, then type on the warped plane", "Puppet Warp to adjust individual letters"], answer: "b" },
+            { question: "Your workflow requires batch applying unique Camera Raw edits to hundreds of RAW files, each needing slightly different exposure adjustments. <br>Which approach scales best while minimizing manual intervention?", options: ["Record an Action in Photoshop with Camera Raw steps and batch-play it", "Use Adobe Bridge: Select all, open in Camera Raw → Sync settings with targeted adjustments per subset of images", "Write a Photoshop Script in ExtendScript to open each, apply Relative Exposure slider change, and save", "Use Lightroom: Create a preset, apply via Smart Collections with Auto-Sync on selected files"], answer: "d" },
+            { question: "When blending multiple focus stacked shots, which technique yields the most control over transition zones?", options: ["Auto Blend Layers > Stack Images > Seamless Tones and Colours", "Manually paint layer masks using a low opacity brush on top of auto blended result", "Use Focus Area selection on each layer, refine edges, then merge via mask", "Use third party plugin for focus stacking"], answer: "a" },
+            { question: "You need to simulate subsurface scattering on a digital portrait composite. Which combination of channels and blend modes is most realistic?", options: ["Duplicate base layer → Apply Gaussian Blur → Blend Mode: Screen → Opacity ~20%", "Extract Skin tones into a separate layer via Colour Range → Apply High Pass filter → Blend Mode: Overlay", "Create a new layer filled with a warm skin toned colour → Apply Blur, mask to skin areas → Blend Mode: Colour", "Use the Subsurface Scattering filter in Neural Filters, then adjust via layer opacity"], answer: "d" },
+            { question: "In a document using multiple artboards, you must export each artboard as both SVG and high res PNG with specific naming conventions. How do you automate this?", options: ["File > Export > Artboards to Files, then manually rename and re-export for SVG", "Use Export As dialog, select all artboards, choose both formats, and set naming templates", "Write an Export Script in JSX that loops through artboards, exports via exportDocumentOptions, and names accordingly", "Use Generate Assets by placing “.png” and “.svg” in layer names"], answer: "b" },
+            { question: "For a print project needing precise registration marks and bleed controls, <br>which tool or panel do you use to add and adjust these non printing elements?", options: ["View > New Guide Layout", "Filter > Other > Custom", "File > Print > Marks and Bleed settings", "Canvas Size adjustment with Canvas Extension Colour"], answer: "c" }
+        ];
+        // Function to shuffle options for each question
+        function shuffleOptions() {
+            questions.forEach(question => {
+            for (let i = question.options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [question.options[i], question.options[j]] = [question.options[j], question.options[i]];
+            }
+            });
+        }
+
+        // Shuffle options before starting the quiz
+        shuffleOptions();
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        isQuizStarted = true; // Mark quiz as started
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionData = questions[currentQuestionIndex];
+        const questionElement = document.createElement('p');
+        questionElement.textContent = questionData.question;
+        questionContainer.appendChild(questionElement);
+
+        questionData.options.forEach((option, index) => {
+            const optionElement = document.createElement('div');
+            optionElement.classList.add('option-container');
+            optionElement.innerHTML = `
+            <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+            <label for="q${currentQuestionIndex}_${index}">${option}</label>
+            `;
+            questionContainer.appendChild(optionElement);
+        });
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (!selectedOption) {
+                alert('Please select an answer before proceeding.');
+                return;
+            }
+
+            if (selectedOption.value === questions[currentQuestionIndex].answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            document.getElementById('result').textContent = `Your score: ${score} / ${questions.length}`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('retakeButton').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden');
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

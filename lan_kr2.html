@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Korean Language - Level 2</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "다음 중 한국어에서 '개' (gae)는 무엇을 세는 단위인가요?", options: ["시간", "사람", "책", "물건"], answer: "d" },
+            { question: "Which of the following sentences uses the appropriate honorific form and correct word order?", options: ["선생님은 학교에 매일 가요.", "선생님은 학교에 가요 매일.", "선생님 학교에 매일 가요.", "매일 선생님은 학교에 가요."], answer: "a" },
+            { question: "In Korean, the verb stem '바꾸다' (to change) is modified into which of the following forms when expressing a future action using the '겠' suffix?", options: ["바꿨겠어요", "바꿔요", "바꿀 거예요", "바꿔요"], answer: "c" },
+            { question: "In a formal setting, if you wanted to ask someone politely to wait for a moment, which of the following would be the most appropriate?", options: ["잠깐만 기다려 주세요.", "잠깐만 기다려요.", "잠시만 기다리세요.", "잠깐 기다려."], answer: "c" },
+            { question: "What is the correct use of the '기 때문에' (because) structure in a sentence?", options: ["그 사람이 늦었기 때문에, 우리는 일찍 시작했어요.", "그 사람이 늦어서, 우리는 일찍 시작했어요.", "그 사람이 늦을 거예요 기 때문에, 우리는 일찍 시작했어요.", "그 사람이 늦기 때문에, 우리는 일찍 시작했어요."], answer: "d" },
+            { question: "Which of the following sentences is grammatically incorrect or contains a common mistake in Korean syntax?", options: ["나는 학교에서 친구를 만났어요.", "나는 도서관에 책을 읽어요.", "나는 그 영화를 봤어요.", "나는 어제 영화를 봤어요."], answer: "b" },
+            { question: "In Korean, the verb stem '가다' (to go) can take different honorific forms depending on the context. Which of the following sentences uses the correct honorific form of 'to go' when referring to an elder or superior?", options: ["선생님이 가세요.", "선생님이 가요.", "선생님이 가십시오.", "선생님이 갑니다."], answer: "a" },
+            { question: "Which of the following sentences correctly uses the conditional form with '면'?", options: ["시간이 있으면, 영화를 봐요.", "시간이 있으면, 영화를 봤어요.", "시간이 있으면, 영화를 봐요?", "시간이 있으면, 영화를 보고 싶어요."], answer: "a" },
+            { question: "Which of the following sentences correctly uses the 'ㄴ/은' or '는' particle to modify a noun?", options: ["이 책이 재밌어요.", "이 책은 재미있어요.", "재미있는 이 책이에요.", "이 재미있는 책이에요."], answer: "c" },
+            { question: "Which of the following phrases correctly uses the '에서' and '까지' particles to express a range of time or location?", options: ["서울에서 부산까지 걸어갔어요.", "서울에 부산까지 걸어갔어요.", "서울까지 부산에서 걸어갔어요.", "서울에서 부산에 걸어갔어요."], answer: "a" },
+            { question: "In formal speech, which of the following sentences correctly expresses a request using the polite form '주세요'?", options: ["물을 주세요.", "물 주세요.", "물을 주세요요.", "물 주세요요."], answer: "a" },
+            { question: "Which of the following sentences is grammatically correct and conveys the meaning 'I have never been to Korea'?", options: ["나는 한국에 가본 적이 없어요.", "나는 한국에 가본 적이 없어요요.", "나는 한국에 가봤지 않아요.", "나는 한국에 가본 일이 없어요."], answer: "a" },
+            { question: "Which of the following sentences correctly uses the passive form of the verb '보다' (to see)?", options: ["영화는 내가 봐요.", "영화는 내가 봤어요.", "영화는 내가 봐져요.", "영화는 내가 보였어요."], answer: "d" },
+            { question: "Which of the following sentences expresses the meaning 'Even if it rains, I will go' using the conditional '아/어도'?", options: ["비가 오면, 저는 갈 거예요.", "비가 오기도 하니까, 저는 갈 거예요.", "비가 오더라도, 저는 갈 거예요.", "비가 오면, 저는 가요."], answer: "c" },
+            { question: "Which of the following sentences uses the appropriate conjunction to express contrast?", options: ["그 사람은 친절하지만, 나는 그를 좋아하지 않아요.", "그 사람은 친절해서, 나는 그를 좋아하지 않아요.", "그 사람은 친절하고, 나는 그를 좋아하지 않아요.", "그 사람은 친절하지만, 나는 그를 좋아하지 않습니다."], answer: "a" },
+            { question: "What does the suffix '-고 나서' mean in Korean?", options: ["After doing something", "Before doing something", "Because of something", "While doing something"], answer: "a" },
+            { question: "Which of the following sentences uses the appropriate form to indicate 'I should go to bed early'?", options: ["나는 일찍 자야 돼요.", "나는 일찍 자고 싶어요.", "나는 일찍 자요.", "나는 일찍 자야 해요."], answer: "a" },
+            { question: "Which of the following sentences correctly uses the '는 것' construction to express 'I like reading books'?", options: ["나는 책을 읽는 것을 좋아해요.", "나는 책을 읽는 것을 좋아해요요.", "나는 책을 읽을 것을 좋아해요.", "나는 책을 읽고 있는 것을 좋아해요."], answer: "a" },
+            { question: "Which of the following sentences uses the '게 되다' construction to express 'I came to like it'?", options: ["나는 그것을 좋아해요.", "나는 그것을 좋아하게 돼요.", "나는 그것을 좋아하게 해요.", "나는 그것을 좋아할 거예요."], answer: "b" },
+            { question: "Which of the following sentences uses the correct form of the verb '가다' (to go) to express 'I will go to the store'?", options: ["나는 가게에 갈 거예요.", "나는 가게에 가는 거예요.", "나는 가게에 갔어요.", "나는 가게에 가고 있어요."], answer: "a" }
+        ];
+        // Function to shuffle options for each question
+        function shuffleOptions() {
+            questions.forEach(question => {
+            for (let i = question.options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [question.options[i], question.options[j]] = [question.options[j], question.options[i]];
+            }
+            });
+        }
+
+        // Shuffle options before starting the quiz
+        shuffleOptions();
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        isQuizStarted = true; // Mark quiz as started
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionData = questions[currentQuestionIndex];
+        const questionElement = document.createElement('p');
+        questionElement.textContent = questionData.question;
+        questionContainer.appendChild(questionElement);
+
+        questionData.options.forEach((option, index) => {
+            const optionElement = document.createElement('div');
+            optionElement.classList.add('option-container');
+            optionElement.innerHTML = `
+            <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+            <label for="q${currentQuestionIndex}_${index}">${option}</label>
+            `;
+            questionContainer.appendChild(optionElement);
+        });
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (!selectedOption) {
+                alert('Please select an answer before proceeding.');
+                return;
+            }
+
+            if (selectedOption.value === questions[currentQuestionIndex].answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            document.getElementById('result').textContent = `Your score: ${score} / ${questions.length}`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('retakeButton').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden');
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

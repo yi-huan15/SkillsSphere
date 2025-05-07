@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Korean Language - Level 3</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+            question: `다음 상황을 바탕으로, 어떻게 그 상황을 처리할 것인지에 대해 150-200단어로 단락을 작성하세요. 3개 이상의 복잡한 문법 구조
+            <br>(예: 조건문, 과거완료, 목적 절)를 사용하고, 문장의 흐름과 일관성을 잘 보여주세요.<br>
+            <div>Using the following scenario, write a paragraph (150-200 words) describing how the speaker would handle the situation. 
+                <br>Use at least 3 different complex grammar structures (such as conditional, past perfect, and purpose clauses), and demonstrate a good command of sentence flow and cohesion.
+            </div><br><br>
+            <div>상황:<br>
+                Scenario:<br>
+            </div>
+            <div>
+                갑작스러운 개인적인 비상 상황으로 중요한 회의에 참석하지 못했습니다. 그 회의는 당신이 책임지고 있는 프로젝트와 관련이 있었기 때문에 매우 중요했습니다. 
+                <br>결국 사무실에 도착했을 때, 모두가 당신의 결석에 대해 불만을 가지고 있다는 것을 알게 되었습니다. 이제 동료들에게 사과하고, 왜 늦었는지 설명하며, 
+                <br>앞으로 이런 일이 반복되지 않도록 해야 합니다. 팀원들에게 할 연설을 작성하세요.
+            </div><br>
+            <div>
+                Imagine you are an employee who has missed an important meeting at work due to an unexpected personal emergency. The meeting was crucial because 
+                <br>it involved a project that you are directly responsible for. When you finally reach the office, you realize that everyone is upset because of your absence. 
+                <br>You need to apologize to your colleagues, explain why you were late, and ensure that this does not happen again. Write the speech you would give to your team.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `다음 글을 읽고, 문법적인 관점에서 '있었던'과 '있을 거예요'의 사용이 시간의 흐름과 기대감을 어떻게 나타내는지 상세히 설명하세요.<br>
+            <div>Read the following passage and then answer the question in detail. Explain how the use of past perfect (에 있었던/있던) 
+                <br>and future tense (ㄹ/을 거예요) is used to create a sense of time and anticipation.</div><br><br>
+            <div>글:<br>
+                Passage:<br>
+            </div>
+            <div>
+                지난 여름, 내가 일했던 회사에서 큰 프로젝트가 있었어요. 그 프로젝트를 맡은 팀은 정말 열심히 일했어요. 
+                <br>내가 그때 그 프로젝트를 진행하기 위해 여러 가지 방법을 고민하고 있었던 순간들이 떠올라요. 내가 정말 열심히 일했지만, 
+                <br>결과는 그렇게 좋지 않았어요. 하지만 그때 그 프로젝트 덕분에 많은 경험을 얻을 수 있었어요. 지금, 
+                <br>그 프로젝트에 대한 후속 작업을 하고 있지만, 그때 그 일을 통해 더 나은 결과를 얻을 수 있을 거예요.
+            </div><br><br>
+            <div>질문:<br>
+                Question:<br>
+            </div>
+            <div>
+                '있었던'과 '있을 거예요'라는 동사의 사용이 과거와 미래의 사건을 어떻게 선명하게 나타내는지 설명하세요. 
+                <br>이 글에서 과거완료와 미래 시제를 사용하는 예시를 들고, 그것들이 화자의 개인적인 경험과 미래에 대한 기대감과 어떻게 연결되는지 설명하세요.
+            </div><br>
+            <div>
+                How do the verbs "있었던" and "있을 거예요" create a clear timeline of past and future events? In your answer, provide examples of 
+                <br>the usage of past perfect and future tense from the passage, and explain how they relate to the narrator's personal experiences and future expectations.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `다음 복잡한 문장을 영어로 번역하세요. 번역할 때 한국어의 문법 구조에서 나타나는 뉘앙스를 주의 깊게 고려하세요.<br>
+            <div>Translate the following complex sentences into English, paying attention to the nuances of the Korean grammatical structures, 
+                <br>especially in terms of hypothetical situations, actions in progress, and the use of the causative form.</div><br><br>
+            <div>
+                1.	내가 이렇게 준비했더라면, 더 좋은 결과가 나왔을 텐데, 정말 후회돼요.<br>
+                2.	그가 나에게 무엇을 시켰다고 해도, 나는 절대 그것을 하지 않았을 거예요.<br>
+                3.	이 일을 다 끝내고 나서, 내가 그 사람에게 어떤 도움을 줄 수 있을지 생각해보려고 해요.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `기술이 현대 한국 사회에 미친 영향을 250-300단어로 논하는 에세이를 작성하세요. 이 에세이에서 '기 위해서,' 
+            <br>'이므로,' '면서,' '때문에'와 같은 고급 문법 구조를 적어도 4개 이상 사용하세요.<br>
+            <div>Write an essay (250-300 words) discussing the impact of technology on modern Korean society. Use at least 4 different advanced grammatical structures 
+                <br>such as "기 위해서," "이므로," "면서," and "때문에" in your response. Provide concrete examples to support your views.</div><br><br>
+            <div>가이드라인:<br>
+                Guidelines:<br>
+            </div>
+            <div>
+                •	기술이 교육, 소통, 일하는 방식 등 사회의 여러 측면에 미친 긍정적이고 부정적인 영향을 논의하세요.<br>
+                    Discuss both positive and negative impacts of technology on aspects such as education, communication, and work.<br>
+                •	기술이 한국 사회에 어떻게 이점과 도전을 동시에 가져왔는지 구체적인 예시를 들어 설명하세요.<br>
+                    Include at least one example where technology has both benefited and caused challenges for Korean society.<br>
+                •	기술이 한국에서의 미래에 미칠 영향에 대해 기회와 위험을 고려하여 결론을 내세요.<br>
+                    Conclude with a thoughtful opinion on the future of technology in Korea, considering both opportunities and risks.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `다음 상황을 고려하고, 그에 대해 답변하세요. 답변에서 '게 되다,' '다고 생각하다,' '도록 하다'와 같은 고급 문법 구조를 사용하세요.<br>
+            <div>Consider the following situation and answer the question below. In your response, use advanced grammatical structures such as "게 되다," "다고 생각하다," and "도록 하다."</div><br><br>
+            <div>상황:<br>
+                Situation:<br>
+            </div>
+            <div>
+                최근 한국으로 이주하여 문화적 차이, 특히 사회적 위계질서와 소통 방식에 적응하는 데 어려움을 겪고 있습니다. 200-250단어로 성찰적인 에세이를 작성하여, 이러한 변화에 어떻게 적응하고 있는지, 
+                <br>어떤 전략을 사용하여 도전 과제를 극복하고 있는지, 그리고 시간이 지남에 따라 이 문화적 차이에 대한 시각이 어떻게 변했는지 설명하세요. 또한, 
+                <br>앞으로 한국 문화에 대한 이해를 더 깊이 있게 하기 위해 어떤 행동을 취할 계획인지도 언급하세요.
+                <br>You have recently moved to Korea and are struggling to adapt to the cultural differences, particularly in terms of social hierarchy and communication styles. 
+                <br>In a reflective essay (200-250 words), explain how you have been adapting to these changes, what strategies you have used to overcome challenges, and how your perspective 
+                <br>on these cultural aspects has changed over time. Also, mention specific actions you are planning to take in the future to further improve your understanding and adaptation to Korean culture.
+                </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `한국으로 이주할 예정인 친구에게 보내는 편지를 작성하세요. 그들에게 문화적 기대와 언어 장벽을 어떻게 극복할 수 있을지에 대해 자세히 조언하세요. 
+            <br>답변에서 '기 때문에,' '라고 해도,' '기 위해서'와 같은 표현을 적어도 세 가지 이상 사용하세요. 또한, 자신의 경험을 바탕으로 구체적인 조언을 제공하세요.<br>
+            <div>Imagine you are writing a letter to a friend who is considering moving to Korea for work or study. Write a detailed letter in which you provide 
+                <br>advice on how to navigate cultural expectations and language barriers. Make sure to use at least three different expressions such as "기 때문에," 
+                <br>"라고 해도," and "기 위해서." Be sure to include personal recommendations based on your own experience.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `다음 대화를 분석하고, 대화에서 사용된 다양한 예의 수준을 설명하세요. 존댓말, 말투, 격식이 어떻게 다르게 사용되었는지 구체적인 예를 들어 설명하세요.<br>
+            <div>Analyze the following conversation and explain the different nuances of politeness levels used in the dialogue. Pay particular attention to the use of 
+                <br>honorifics, speech levels, and formality. Answer the question by using specific examples from the dialogue and explaining their meaning.
+            </div><br><br>
+            <div>대화:<br>
+                Conversation:<br>
+            </div>
+            <div>
+                A: "저는 오늘 회식에 갈 수 있을까요?" (Can I go to the company dinner today?)
+                B: "물론 가실 수 있습니다. 다만, 일이 끝나면 꼭 먼저 가세요." (Of course, you can go. However, please make sure to go after work.)
+                A: "감사합니다! 그럼 일이 끝난 후에 바로 가겠습니다." (Thank you! Then, I will go right after work.)
+                B: "알겠습니다. 좋은 시간 되세요." (I understand. Have a good time.)
+            </div><br><br>
+            <div>질문:<br>
+                Question:<br>
+            </div>
+            <div>
+                대화에서 사용된 다른 말투와 예의 수준이 대화의 톤에 어떻게 영향을 미쳤는지 설명하세요. 특정 동사 형태와 존댓말이 어떻게 사용되었는지, 
+                <br>그리고 그들이 화자와 청자 간의 관계를 어떻게 나타내는지 설명하세요.
+                <br>How do the different speech levels (formal, polite, and humble) affect the tone of the conversation? In your answer, 
+                <br>refer to specific verb forms and honorifics that are used in this dialogue, and explain how they reflect the relationship between the speakers.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `다음 글에서 '보다 더'와 '만큼'을 사용하여 비교한 부분을 식별하고, 그 사용 방식이 어떤 의미를 전달하는지 설명하세요. 그런 후, 
+            <br>다른 비교 구조(예: '게'나 '지 않다')를 사용하여 글을 다시 작성하고, 이러한 변화가 의미에 어떻게 영향을 미치는지 설명하세요.<br>
+            <div>In the following passage, identify and explain the use of "보다 더" and "만큼" to make comparisons. 
+                <br>Then, rewrite the passage using different comparative structures (such as "게" or "지 않다") and explain how these changes affect the meaning.
+            </div><br><br>
+            <div>글:<br>
+                Passage:<br>
+            </div>
+            <div>
+                저는 이 문제를 푸는 것이 그 문제를 푸는 것보다 더 쉬운 것 같아요. 그 문제를 푼 후에, 저는 더 어려운 문제를 풀고 싶었지만, 그렇게 되지는 않았어요.
+            </div><br><br>
+            <div>질문:<br>
+                Question:<br>
+            </div>
+            <div>
+                '보다 더'와 '만큼'이 이 글에서 두 행동이나 상태를 비교하는 데 어떻게 사용되었는지 설명하세요. 다른 비교 구조를 사용했을 때 어떤 차이가 발생할 수 있는지 설명하고, 
+                <br>'게'나 '지 않다'를 사용한 유사한 비교 예시를 제공하세요.
+                <br>How do "보다 더" and "만큼" help compare the two actions or states in this passage? What differences would occur  
+                <br>if you used other comparative structures? Provide your own example of a similar comparison using "게" or "지 않다."
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `다음 영어 문단을 한국어로 번역하세요. 번역할 때, 상대절, 존댓말, 복잡한 문장 구조를 적절하게 사용하세요.<br>
+            <div>Using your understanding of Korean sentence structure, translate the following English paragraph into Korean, 
+                <br>paying attention to the appropriate use of relative clauses, honorifics, and complex sentence structures.
+            </div><br><br>
+            <div>영어 문단:<br>
+                English Paragraph:<br>
+            </div>
+            <div>
+                When I first moved to Korea, I had difficulty understanding the culture, especially the importance of hierarchy in social interactions. 
+                <br>Over time, however, I learned to respect the traditions and customs. I made an effort to speak more formally to my superiors and colleagues, 
+                <br>and gradually became more comfortable in my environment. Still, there are moments when I feel the pressure of conforming to societal expectations. 
+                <br>In the future, I hope to continue improving my Korean language skills and better understand Korean society.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            },
+            {
+            question: `다음 글을 읽고, 그 속에서 사용된 예의의 수준과 격식이 어떻게 대화의 톤을 결정하는지 분석하세요. 그 후, 이 글이 화자와 청자 간의 관계와 사회적 맥락을 어떻게 반영하는지 설명하세요.<br>
+            <div>Read the following passage and identify the various levels of politeness and formality used throughout the text. Then, explain how these levels reflect 
+                <br>the relationship between the speaker and the listener, and the social context of the conversation.
+            </div><br><br>
+            <div>글:<br>
+                Passage:<br>
+            /div>
+            <div>
+                "이해해 주셔서 감사합니다. 이번에는 더 나은 결과를 위해 노력할 수 있도록 하겠습니다. 또한, 이번 기회를 통해 많은 것을 배울 수 있었고, 앞으로도 더 많은 것을 배우고 싶습니다."
+            </div><br><br>
+            <div>질문:<br>
+                Question:<br>
+            </div>
+            <div>
+                '해 주셔서'와 '도록 하겠습니다'와 같은 표현들이 어떻게 청자에 대한 존경을 나타내고, 상황의 중요성을 강조하는지 설명하세요. 
+                <br>이러한 표현들이 대화의 톤을 어떻게 설정하는지, 그리고 이 표현들이 청자와 화자 간의 관계에 어떻게 영향을 미치는지 설명하세요.
+                <br>How do the speaker's choice of formal language, such as "해 주셔서" and "도록 하겠습니다," reflect both respect for the 
+                <br>listener and the importance of the situation? In your answer, explain why certain honorifics are used and how they establish the tone of the conversation.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your answer here..."></textarea>`;
+            }
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        const questionData = questions[currentQuestionIndex];
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionElement = document.createElement('p');
+        questionElement.innerHTML = `${questionData.question}`;
+        questionContainer.appendChild(questionElement);
+
+        if (questionData.inputAnswer) {
+            const inputBox = document.createElement('div');
+            inputBox.innerHTML = questionData.renderInputBox();
+            questionContainer.appendChild(inputBox);
+        } else if (questionData.options) {
+            questionData.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option-container');
+                optionElement.innerHTML = `
+                <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+                <label for="q${currentQuestionIndex}_${index}">${option}</label>
+                `;
+                questionContainer.appendChild(optionElement);
+            });
+        }
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const userInput = document.querySelector('textarea[name="userAnswer"]');
+            if (!userInput || userInput.value.trim() === '') {
+            alert('Please input your answer before proceeding.');
+            return;
+            }
+
+            // Save the user's input answer for the current question
+            questions[currentQuestionIndex].saveAnswer(userInput.value.trim());
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+            } else {
+            showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = `Thank you for completing the quiz. Your answers have been submitted successfully. <div><br>You will receive a notification about your score within 7 working days. Please check your mailbox for updates.</div>`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden'); // Show the back to test page button
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+    
+        <nav class="nav">
+            <button onclick="window.location.href='test.html'" class="func-button">Skills Test Platform</button>
+            <button onclick="window.location.href='video.html'" class="func-button">Upload Video</button>
+            <button onclick="window.location.href='resume.html'" class="func-button">Resume Optimizer</button>
+        </nav>
+        
+        <!-- Skills Test Platform Section -->
+        <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold mb-4">Design</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="window.location.href='python_test.html'" class="func-button">Python</button>
+                <button onclick="window.location.href='java_test.html'" class="func-button">Java</button>
+                <button onclick="window.location.href='sql_test.html'" class="func-button">SQL</button>
+                <button onclick="window.location.href='animation_test.html'" class="func-button">Animation</button>
+                <button onclick="window.location.href='editing_test.html'" class="func-button">Editing & PS</button>
+                <button onclick="window.location.href='language_test.html'" class="func-button">Language</button>
+                <button onclick="window.location.href='cpp_test.html'" class="func-button">C++</button>
+            </div>
+        </div>
+
+        <!-- Skill Test Section -->
+        <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold mb-4"><br>Choose Your Level</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="border p-4 rounded-lg text-center">
+                    <h3 class="text-md font-medium">Level 1</h3>
+                    <button class="func-button" onclick="window.location.href='design1.html'">Start</button>
+                </div>
+                <div class="border p-4 rounded-lg text-center">
+                    <h3 class="text-md font-medium">Level 2</h3>
+                    <button class="func-button" onclick="window.location.href='design2.html'">Start</button>
+                </div>
+                <div class="border p-4 rounded-lg text-center">
+                    <h3 class="text-md font-medium">Level 3</h3>
+                    <button class="func-button" onclick="window.location.href='design3.html'">Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

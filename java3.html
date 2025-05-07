@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Java Script - Level 3</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+            question: `Write a Java program that calculates the factorial of a given number using recursion. 
+            <br>The program should prompt the user to input a number and then display the factorial of that number.<br><br>
+            <div>Expected Output:</div><br>
+            <img src="javaq31.png" alt="Table Data" class="question-image"><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your codes here..."></textarea>`;
+            }
+            },
+            {
+            question: `Write a Java program to check whether a given number is prime or not. 
+            <br>The program should prompt the user to enter a number and display whether the number is prime or not.<br><br>
+            <div>Expected Output:</div><br>
+            <img src="javaq32.1.png" alt="Table Data" class="question-image"><br>
+            <img src="javaq32.2.png" alt="Table Data" class="question-image"><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your codes here..."></textarea>`;
+            }
+            },
+            {
+            question: `Write a Java program that sorts an array of integers in ascending order using the Bubble Sort algorithm. 
+            <br>The program should print the sorted array after sorting.<br><br>
+            <div>Expected Output:</div><br>
+            <img src="javaq33.png" alt="Table Data" class="question-image"><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your codes here..."></textarea>`;
+            }
+            },
+            {
+            question: `Problem: Create a simple banking system where a user can perform the following operations:<br><br>
+            <div>
+                •	View balance<br>
+                •	Deposit money<br>
+                •	Withdraw money<br>
+                •	Transfer money to another account
+            </div><br><br>
+            <div>The bank should have multiple accounts, and each account should have a unique account number. The user should be able to view their balance, deposit money, and withdraw money. 
+                <br>If the user tries to withdraw more than their balance, the system should print an error message. Additionally, the system should support transferring money between two accounts.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your codes here..."></textarea>`;
+            }
+            },
+            {
+            question: `Problem: Create a library management system that allows:<br><br>
+            <div>
+                •	Adding books to the library<br>
+                •	Viewing available books<br>
+                •	Borrowing books (reducing the number of available copies)<br>
+                •	Returning books (increasing the number of available copies)
+            </div><br><br>
+            <div>The system should store books and their details, such as title, author, and number of copies.</div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your codes here..."></textarea>`;
+            }
+            },
+            {
+            question: `Problem: Design and implement a TodoList application that allows users to:<br><br>
+            <div>
+                •	Add new tasks<br>
+                •	View all tasks<br>
+                •	Mark tasks as completed<br>
+                •	Delete tasks
+            </div><br><br>
+            <div>Each task should have a description, priority level (high, medium, low), and a status (completed or not completed). 
+                <br>The program should allow users to interact with the list using the following commands:</div><br><br>
+            <div>
+                •	Add a task<br>
+                •	View all tasks<br>
+                •	Mark task as completed<br>
+                •	Delete task<br>
+                •	Exit
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your codes here..."></textarea>`;
+            }
+            },
+            {
+            question: `Problem: Design and implement a StudentGradingSystem that allows teachers to:<br><br>
+            <div>
+                •	Add a student with their name and grades in three subjects.<br>
+                •	View the details of a student, including their average grade.<br>
+                •	Display all students sorted by their average grade in descending order.<br>
+                •	Find the highest and lowest average grade.
+            </div><br><br>`,
+            inputAnswer: true, // Indicates that the user needs to input their answer
+            saveAnswer: function(userInput) {
+                // Save the user's input answer
+                this.userAnswer = userInput;
+            },
+            renderInputBox: function() {
+                return `<textarea name="userAnswer" rows="15" cols="90" placeholder="Write your codes here..."></textarea>`;
+            }
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        const questionData = questions[currentQuestionIndex];
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionElement = document.createElement('p');
+        questionElement.innerHTML = `${questionData.question}`;
+        questionContainer.appendChild(questionElement);
+
+        if (questionData.inputAnswer) {
+            const inputBox = document.createElement('div');
+            inputBox.innerHTML = questionData.renderInputBox();
+            questionContainer.appendChild(inputBox);
+        } else if (questionData.options) {
+            questionData.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option-container');
+                optionElement.innerHTML = `
+                <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+                <label for="q${currentQuestionIndex}_${index}">${option}</label>
+                `;
+                questionContainer.appendChild(optionElement);
+            });
+        }
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const userInput = document.querySelector('textarea[name="userAnswer"]');
+            if (!userInput || userInput.value.trim() === '') {
+            alert('Please input your answer before proceeding.');
+            return;
+            }
+
+            // Save the user's input answer for the current question
+            questions[currentQuestionIndex].saveAnswer(userInput.value.trim());
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+            } else {
+            showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = `Thank you for completing the quiz. Your answers have been submitted successfully. <div><br>You will receive a notification about your score within 7 working days. Please check your mailbox for updates.</div>`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden'); // Show the back to test page button
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>

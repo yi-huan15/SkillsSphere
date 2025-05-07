@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSphere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen bg-gray-100 p-4">
+        <header>
+            <div style="display: flex; align-items: center; width: 100%;">
+                <div class="logo">
+                    <img src="final_logo.png" alt="SkillSphere Logo" class="logo-img" style="margin-right: 5px;">
+                    <span style="margin-left: 0; font-weight: bold; font-size: 1.5em;">SkillSphere</span>
+                </div>
+                <input type="text" placeholder="What skills you want to learn?" class="search-bar" onclick="window.location.href='serch.html'" style="margin-left: 40px;">
+                <div class="profile" style="display: flex; align-items: center; gap: 30px; margin-left: 50px;">
+                    <span class="user-icon" onclick="window.location.href='notification.html'">🔔</span>
+                    <span class="user-icon" onclick="window.location.href='mail.html'">📧</span>
+                    <span class="user-icon" onclick="window.location.href='fav.html'">❤️</span>
+                    <span class="user-icon" onclick="window.location.href='main.html'">🏠</span>
+                    <span class="user-icon" onclick="window.location.href='profile.html'">👤</span>
+                </div>
+            </div>
+        </header>
+        <hr style="margin: 20px 0; border: 1px solid #ccc;">
+    </div>
+
+    <h2>Chinese Language - Level 2</h2>
+    <div id="quizContainer">
+        <form id="quizForm">
+            <div id="questionContainer"></div>
+            <button type="button" id="backButton" onclick="previousQuestion()" class="hidden">Back</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        </form>
+        <p id="result" class="hidden"></p>
+        <button id="retakeButton" class="hidden" onclick="resetQuiz()">Retry</button>
+        <button id="backToTestPageButton" class="hidden" onclick="window.location.href='test.html'">Back to Test Page</button>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "考察读者对于话语背后真实意图的理解。<br><br>A：你今天穿的衣服真不错啊！看起来好像去参加时尚秀一样！<br>B：哈哈，谢谢夸奖，真的觉得好看吗？<br>A：嗯，当然！不过你要是稍微再瘦一点儿，那就完美了。真是太有风格了！<br><br>在这个对话中，", options: ["A是在真心夸赞", "A是在阴阳怪气"], answer: "b" },
+            { question: "下列句子中 “长” 字的读音正确的是哪一项？", options: ["这条河流长得像一条巨龙。（cháng）", "他在公司长期工作。（zhǎng）", "他长得非常高。（cháng）", "以上全是"], answer: "c" },
+            { question: "下面哪个句子使用的标点符号是正确的？", options: ["他真是个好学生！全班同学都很佩服他。", "我们一起去旅行，好吗？", "你今天早上去哪儿了：我一直在等你！", "天气真好，我们出去玩吧？"], answer: "b" },
+            { question: "下面句子存在语病，请选择正确的修改方法：<br>“他不但会唱歌，且会跳舞。”", options: ["句子没有语病", "句子可以改为： “他不但会唱歌，也会跳舞。”", "句子可以改为： “他不仅会唱歌，且会跳舞。”"], answer: "b" },
+            { question: "下列句子中“打”字的读音和含义相同的是哪一项？", options: ["他不小心把杯子打碎了。（dǎ）", "他很喜欢打篮球。（dǎ）", "今天下午我去打个电话给朋友。（dǎ）", "你去商店时记得打包午餐。（dā）"], answer: "a" },
+            { question: "画蛇添足中的 “蛇足” 一词，指的是：", options: ["过分的装饰", "不必要的东西", "过度的努力", "拍马屁的行为"], answer: "b" },
+            { question: "选择最恰当的词语填空：<br>他考试时有些紧张，最后的结果_________，没有达到预期的效果。", options: ["令人失望", "令人意外", "令人高兴", "令人惊讶"], answer: "a" },
+            { question: "下面这句话出自《论语》，其意思是：<br>“子曰：‘三人行，必有我师焉。’”", options: ["学习要随时保持谦虚，向他人请教", "行走要保持速度，不能慢", "任何人都能成为你的老师", "只有三个人在一起，才有学习的机会"], answer: "a" },
+            { question: "下面这句诗出自唐代诗人王之涣的《登鹳雀楼》，请回答诗句的意思：<br>“白日依山尽，黄河入海流。”", options: ["描写了白天的日落景象和黄河入海的壮丽景色", "表现了黄昏时分的景象", "表达了人们对山河的依赖", "说明白天结束，夜晚到来"], answer: "a" },
+            { question: "下面四个词语中，哪个词语与其他三个不同？", options: ["自觉", "主动", "自愿", "诚恳"], answer: "d" },
+            { question: "小明： 你怎么脸色这么难看？<br>小华： 没事，我很好。<br>（小华低着头，声音有些发抖。）<br><br>小华说“没事”，你认为他是真的没事吗？", options: ["是真的没事，他只是累了", "是真的没事，他只是感冒了", "不是，他可能有事但不想说", "不是，他只是不喜欢说话"], answer: "c" },
+            { question: "妈妈： 你考试成绩出来了吗？<br>小玲： 嗯……出了。<br>妈妈： 怎么样？<br>小玲： 还可以啦……<br>（小玲一边说，一边偷偷把试卷藏进书包。）<br><br>从这段对话来看，小玲的表现最可能说明什么？", options: ["她对成绩满意", "她考得很差，不想让妈妈知道", "她不喜欢考试", "她不想回家"], answer: "b" },
+            { question: "朋友A： 你真的不介意我迟到了吗？<br>朋友B（笑着）： 没关系啦，习惯了~<br>（语气拖长，眼神看向别处。）<br><br>朋友B的反应最可能表示：", options: ["他真的一点都不介意", "他其实有点不高兴，只是不直接表达", "他已经不把这位朋友当朋友了", "他根本没注意到迟到"], answer: "b" },
+            { question: "下列句子中“发”字的读音和含义正确的是哪一项？", options: ["他每个月都会发一封邮件给我。（fā，发送）", "我发现你今天穿得很漂亮。（fā，发现）", "我已经把这篇文章发给编辑了。（fā，发送）", "他对我发火了，真不应该。（fā，生气）"], answer: "d" },
+            { question: "小张： 你还在生我气吗？<br>小李： 我说了我没生气。<br>（语气冷淡，脸一整天都板着。）<br><br>小李的回答最合理的解释是：", options: ["他不生气，只是表情冷淡", "他生气了，但不想说出来", "他生病了，不想讲话", "他在想别的事情，没注意对话"], answer: "b" },
+            { question: "小伟： 你昨天怎么没来学校？<br>小安： 哦，我在家休息，反正我来不来也没人注意。<br><br>小安这句话最可能的真正意思是：", options: ["他真的觉得没人注意他", "他开玩笑，其实大家都注意他", "他有点难过，觉得自己被忽视", "他高兴终于可以休息一天"], answer: "c" },
+            { question: "小彤： 我的演讲讲得还可以吧？<br>小芸： 哇，果然是“全场最特别”的发言！<br>（小芸说话时忍不住笑）<br><br>小芸的“全场最特别”最可能代表什么意思？", options: ["她真心觉得小彤演讲特别好", "她觉得小彤讲得很奇怪或出错了", "她认为小彤讲得有创意", "她在羡慕小彤的勇气"], answer: "b" },
+            { question: "小志： 你愿意和我一组吗？<br>小凯： 哎哟，我运气可真好啊~<br><br>根据小凯的语气，“运气真好”这句话最可能的意思是：", options: ["他真的很开心", "他在客气地同意", "他其实不想和小志一组", "他对组员没意见"], answer: "c" },
+            { question: "老师： 你复习了吗？<br>小文： 老师，您放心，我一定“靠实力”来决定分数！<br><br>这句话中的“靠实力”最可能表示什么？", options: ["他很有信心考高分", "他没复习，准备 “裸考”", "他准备作弊", "他想炫耀自己的学习方法"], answer: "b" },
+            { question: "妈妈： 今天怎么这么晚才回来？<br>小军： 哎呀，这叫“享受青春”，难得放松一下嘛~<br><br>小军的回答最可能意味着：", options: ["他确实在放松", "他在找借口为自己开脱", "他想告诉妈妈别担心", "他今天心情特别好"], answer: "b" }
+        ];
+        // Function to shuffle options for each question
+        function shuffleOptions() {
+            questions.forEach(question => {
+            for (let i = question.options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [question.options[i], question.options[j]] = [question.options[j], question.options[i]];
+            }
+            });
+        }
+
+        // Shuffle options before starting the quiz
+        shuffleOptions();
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Shuffle the questions array
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+        
+        // Shuffle questions before starting the quiz
+        shuffleQuestions();
+
+        // Clear progress immediately when the page is loaded
+        window.addEventListener('load', () => {
+            resetQuiz(); // Clear the quiz progress on page load
+        });
+
+        // Add a reminder for the user if they leave the page
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your progress will not be saved.';
+        });
+
+        function loadQuestion() {
+        isQuizStarted = true; // Mark quiz as started
+        const questionContainer = document.getElementById('questionContainer');
+        questionContainer.innerHTML = '';
+        const questionData = questions[currentQuestionIndex];
+        const questionElement = document.createElement('p');
+        questionElement.innerHTML = questionData.question; // Use innerHTML to render <br> tags
+        questionContainer.appendChild(questionElement);
+
+        questionData.options.forEach((option, index) => {
+            const optionElement = document.createElement('div');
+            optionElement.classList.add('option-container');
+            optionElement.innerHTML = `
+            <input type="radio" name="q${currentQuestionIndex}" value="${String.fromCharCode(97 + index)}" id="q${currentQuestionIndex}_${index}">
+            <label for="q${currentQuestionIndex}_${index}">${option}</label>
+            `;
+            questionContainer.appendChild(optionElement);
+        });
+
+        document.getElementById('backButton').classList.toggle('hidden', currentQuestionIndex === 0);
+        }
+
+        // Limit the quiz to display only the first 10 questions
+        const maxQuestions = 10;
+        if (questions.length > maxQuestions) {
+            questions.splice(maxQuestions);
+        }
+
+        let isQuizStarted = false;
+
+         // Add event listener to warn the user before leaving the page
+        window.addEventListener('beforeunload', (event) => {
+            if (isQuizStarted) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+            }
+        });
+
+        // Clear progress if the user confirms leaving
+        window.addEventListener('unload', () => {
+            if (isQuizStarted) {
+                resetQuiz(); // Clear the quiz progress
+            }
+        });
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (!selectedOption) {
+                alert('Please select an answer before proceeding.');
+                return;
+            }
+
+            if (selectedOption.value === questions[currentQuestionIndex].answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizForm').classList.add('hidden');
+            document.getElementById('result').textContent = `Your score: ${score} / ${questions.length}`;
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('retakeButton').classList.remove('hidden');
+            document.getElementById('backToTestPageButton').classList.remove('hidden');
+        }
+
+        // Modify resetQuiz to reshuffle questions on retry
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isQuizStarted = false; // Reset quiz state
+            shuffleQuestions(); // Reshuffle questions for a new random order
+            document.getElementById('quizForm').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('retakeButton').classList.add('hidden');
+            document.getElementById('backToTestPageButton').classList.add('hidden');
+            loadQuestion();
+        }
+
+        // Initialize the first question
+        loadQuestion();
+    </script>
+</body>
+</html>
